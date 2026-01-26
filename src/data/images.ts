@@ -9,28 +9,28 @@ export const images = [
     },
     {
         id: 2,
-        url: '/images/Cinestill 50D + Kodak Endura (2).jpeg',
+        url: '/images/Cinestill-50D-plus-Kodak-Endura-2.jpeg',
         title: 'Cinestill 50D II',
         author: 'Cheolwoo',
         orientation: 'portrait'
     },
     {
         id: 3,
-        url: '/images/Cinestill 50D + Kodak Endura.jpeg',
+        url: '/images/Cinestill-50D-plus-Kodak-Endura.jpeg',
         title: 'Cinestill 50D',
         author: 'Cheolwoo',
         orientation: 'landscape'
     },
     {
         id: 4,
-        url: '/images/Cinestill 800T + Kodak Endura (2).jpeg',
+        url: '/images/Cinestill-800T-plus-Kodak-Endura-2.jpeg',
         title: 'Cinestill 800T',
         author: 'Cheolwoo',
         orientation: 'portrait'
     },
     {
         id: 5,
-        url: '/images/Fujicolor C200 + 3513.jpeg',
+        url: '/images/Fujicolor-C200-plus-3513.jpeg',
         title: 'Fujicolor C200',
         author: 'Cheolwoo',
         orientation: 'landscape'
@@ -156,14 +156,14 @@ export const images = [
     },
     {
         id: 23,
-        url: '/images/Kodak Plus-X Pan 125 (Exp. 1979).jpeg',
+        url: '/images/Kodak-Plus-X-Pan-125-Exp.-1979.jpeg',
         title: 'Kodak Plus-X',
         author: 'Cheolwoo',
         orientation: 'landscape'
     },
     {
         id: 24,
-        url: '/images/Konica Impresa 50 (Exp.2006) + Kodak Endura.jpeg',
+        url: '/images/Konica-Impresa-50-Exp.2006-plus-Kodak-Endura.jpeg',
         title: 'Konica Impresa',
         author: 'Cheolwoo',
         orientation: 'landscape'
