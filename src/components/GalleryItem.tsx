@@ -1,0 +1,48 @@
+import React, { useLayoutEffect, useRef } from 'react';
+import { useGalleryStore } from '../store/useGalleryStore';
+import styles from '../styles/Gallery.module.scss';
+
+
+interface Props {
+    id: number;
+    url: string;
+    title: string;
+    displayLabel: string;
+    zPriority?: number;
+}
+
+const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0 }) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const registerItem = useGalleryStore((state) => state.registerItem);
+    const unregisterItem = useGalleryStore((state) => state.unregisterItem);
+    const updateHover = useGalleryStore((state) => state.updateHover);
+
+    useLayoutEffect(() => {
+        if (ref.current) {
+            registerItem(id, url, ref.current, zPriority);
+        }
+        return () => unregisterItem(id);
+    }, [id, url, registerItem, unregisterItem, zPriority]);
+
+    // We don't need to force aspect ratio classes since we want to align with the real image size.
+    // The width is 100% (of the column), and height is auto.
+
+    return (
+        <div
+            className={styles.galleryItem}
+            ref={ref}
+            onMouseEnter={() => updateHover(id, true)}
+            onMouseLeave={() => updateHover(id, false)}
+        >
+            <img
+                src={url}
+                alt={title}
+                className={styles.layoutImage}
+                loading="eager" // Load asap to establish layout height
+            />
+
+        </div>
+    );
+};
+
+export default GalleryItem;

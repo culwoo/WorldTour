@@ -1,0 +1,111 @@
+@import '../styles/variables';
+
+.scrollWrapper {
+    /* Height will be determined by ScrollTrigger pinning, 
+       but initially it should just encompass content. 
+       Actually GSAP adds padding to this pin-spacer. */
+    width: 100%;
+    position: relative;
+    /* Determine height needed for scroll? No, GSAP Pinned element logic handles spacing. */
+}
+
+.stickyContainer {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.track {
+    display: flex;
+    height: auto;
+    /* Let items define height */
+    align-items: center;
+    /* Center them vertically in the track */
+    padding: 0 15vw 0 10vw;
+    gap: 5vw;
+    /* Consistent gap */
+    will-change: transform;
+}
+
+.itemWrapper {
+    height: 100%;
+    width: auto;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    /* Child GalleryItem styles hook */
+    :global(.galleryItem) {
+        width: auto;
+        height: 100%;
+    }
+
+    /* Override for horizontal layout: Height is master, Width is auto */
+    /* Override for horizontal layout: Height is master */
+    img {
+        height: auto !important;
+        width: auto !important;
+
+        /* The key fix: constrain dimension directly */
+        /* Increased to 65vh based on user feedback to be larger */
+        max-height: 65vh !important;
+        max-width: 80vw !important;
+
+        /* Ensure natural aspect ratio is respected strictly */
+        object-fit: contain !important;
+
+        /* Ensure no other styles override this */
+        min-height: 0 !important;
+        min-width: 0 !important;
+    }
+}
+
+/* Intro/Outro Cards */
+.introCard,
+.outroCard {
+    color: #fff;
+    font-family: "Playfair Display", serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30vw;
+
+    h2 {
+        font-size: 5rem;
+        line-height: 1;
+        margin: 0;
+        mix-blend-mode: difference;
+    }
+
+    p {
+        font-size: 1.2rem;
+        opacity: 0.6;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        width: 80vw;
+        /* Mobile: Cards take mostly full width */
+
+        h2 {
+            font-size: 3rem;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .track {
+        padding: 0 5vw;
+    }
+
+    .itemWrapper {
+        img {
+            max-width: 85vw !important;
+            max-height: 60vh !important;
+        }
+    }
+}

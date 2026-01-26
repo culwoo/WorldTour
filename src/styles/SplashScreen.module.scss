@@ -1,0 +1,71 @@
+@import './variables';
+
+.splashContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #050505;
+    /* Deep black matches site theme */
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.content {
+    text-align: center;
+    color: #fff;
+    font-family: "Playfair Display", serif;
+}
+
+.title {
+    font-size: 4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+
+    .line {
+        display: block;
+        overflow: hidden;
+    }
+}
+
+.counterWrapper {
+    position: absolute;
+    bottom: 5rem;
+    right: 5rem;
+    font-family: "Inter", sans-serif;
+    /* Technical/Clean font for numbers */
+    font-variant-numeric: tabular-nums;
+    /* Prevents jitter */
+    font-size: 4rem;
+    font-weight: 300;
+    display: flex;
+    align-items: flex-start;
+    opacity: 0.5;
+}
+
+.counter {
+    line-height: 1;
+}
+
+.symbol {
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+    margin-left: 0.2rem;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .counterWrapper {
+        bottom: 2rem;
+        right: 2rem;
+        font-size: 2.5rem;
+    }
+}

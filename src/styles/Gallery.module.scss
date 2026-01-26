@@ -1,0 +1,82 @@
+@import './variables';
+
+.gallerySection {
+    padding: 10vh 5vw;
+    position: relative;
+    z-index: 10;
+}
+
+.gallery {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    width: 28%;
+    /* Slightly reduced from 30% to give more breathing room */
+    max-width: 400px;
+    /* Constrain max size so photos don't get huge on wide screens */
+    gap: 15vh;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: none;
+        gap: 5vh;
+    }
+}
+
+/* Offset columns for scattered feel */
+.column:nth-child(2) {
+    margin-top: 15vh;
+}
+
+.column:nth-child(3) {
+    margin-top: 5vh;
+}
+
+
+.galleryItem {
+    position: relative;
+    width: 100%;
+    /* Let content define height */
+    /* min-height removed to allow small images or horizontals */
+
+    transition: transform 0.3s ease-out;
+
+    &:hover {
+        /* Optional DOM-side hover effect if needed, but WebGL handles it mostly */
+        // transform: scale(1.02); 
+    }
+}
+
+/* .portrait and .landscape classes removed as they are no longer used */
+
+.layoutImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 0;
+    /* Hidden but takes up space */
+    pointer-events: none;
+}
+
+/* Info styling */
+.info {
+    position: absolute;
+    bottom: -2rem;
+    left: 0;
+    color: #fff;
+    font-family: "Playfair Display", serif;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    mix-blend-mode: exclusion;
+}

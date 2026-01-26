@@ -1,0 +1,109 @@
+@import '../styles/variables';
+
+.parallaxSection {
+    position: relative;
+    padding: 20vh 5vw;
+    background: transparent;
+    z-index: 10;
+    min-height: 100vh;
+}
+
+.columnWrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 5vw;
+}
+
+.oddColumn,
+.evenColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 20vh;
+    width: 35%;
+}
+
+.verticalItem {
+    width: 100%;
+    /* aspect-ratio removed to let image dictate height */
+    position: relative;
+    margin-bottom: 5vh;
+    /* Basic gap if flow */
+
+    :global(.galleryItem) {
+        width: 100%;
+        /* height auto handled in galleryItem/layoutImage */
+    }
+
+    :global(.layoutImage) {
+        width: 100% !important;
+        height: auto !important;
+        max-width: nonebox;
+    }
+}
+
+/* Stack Section Styles */
+.stackSection {
+    height: 100vh;
+    /* Long scroll area */
+    position: relative;
+    z-index: 10;
+}
+
+.stackContainer {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.stackCard {
+    position: absolute;
+    height: 65vh;
+    width: 43vh;
+    /* 2:3 Ratio approx */
+    /* initial state set by GSAP usually, but center it */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+
+    /* Using gallery item inside */
+    :global(.galleryItem) {
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (max-width: 768px) {
+        width: 80vw;
+        height: 60vh;
+        /* Mobile specific sizing */
+    }
+}
+
+@media (max-width: 768px) {
+    .columnWrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .oddColumn,
+    .evenColumn {
+        width: 90%;
+        gap: 10vh;
+    }
+
+    .oddColumn {
+        margin-bottom: 10vh;
+    }
+}
