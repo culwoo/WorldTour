@@ -19,9 +19,13 @@ const SceneContent: React.FC<{ ready: boolean }> = ({ ready }) => {
             <PersistentGeo />
 
             {/* Lazy load the rest of the gallery only after Splash flows out */}
-            {ready && items.filter(item => item.useWebGL !== false).map((item) => (
-                <GalleryPlane key={item.id} item={item} />
-            ))}
+            {ready && (
+                <Suspense fallback={null}>
+                    {items.filter(item => item.useWebGL !== false).map((item) => (
+                        <GalleryPlane key={item.id} item={item} />
+                    ))}
+                </Suspense>
+            )}
             <Preload all />
         </>
     );
