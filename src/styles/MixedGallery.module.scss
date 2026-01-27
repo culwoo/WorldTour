@@ -46,8 +46,7 @@
     margin-top: 20vh;
 
     @media (max-width: 768px) {
-        margin-top: 5vh;
-        /* Reset to standard small gap on mobile */
+        margin-top: 0 !important;
     }
 }
 
@@ -95,12 +94,17 @@
         height: 100%;
     }
 
+    :global(.layoutImage) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover !important;
+    }
+
     @media (max-width: 768px) {
-        width: 80vw;
-        height: 60vh;
-        /* Mobile specific sizing */
-        /* Move slightly down visually if needed, but center (50%) usually works best with dvh */
-        /* User said "too high", verify 100dvh first. */
+        width: 70vw;
+        height: auto;
+        aspect-ratio: 2/3;
+        top: 55%;
     }
 }
 
@@ -108,6 +112,11 @@
     .columnWrapper {
         flex-direction: column;
         align-items: center;
+    }
+
+    .verticalItem {
+        margin-top: 0 !important;
+        margin-bottom: 5vh !important;
     }
 
     .oddColumn,
