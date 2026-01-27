@@ -51,24 +51,26 @@ const MixedGallery: React.FC = () => {
     return (
         <div style={{ position: 'relative', zIndex: 10 }}>
             {/* Phase 1: Horizontal Scroll */}
-            <HorizontalGallery items={section1} title="The<br/>Collection" subtitle="Phase I — Horizon" />
+            <HorizontalGallery items={section1} title="The<br/>Collection" subtitle="Phase I" />
 
             {/* Transition */}
-            <Marquee text="Perspective Shift • Verticality • Gravity • " direction="right" speed={20} />
+            <Marquee text="LifeOfKwak • " direction="right" speed={20} />
 
             {/* Phase 2: Vertical Parallax */}
             <div style={{ background: 'transparent' }}>
                 <div style={{ padding: '10vh 0', textAlign: 'center' }}>
-                    <h2>Phase II — Chaos</h2>
-                    <p>Order in disorder</p>
+                    <h2>Phase II</h2>
                 </div>
                 <ParallaxGallery items={section2} />
             </div>
 
             {/* Transition */}
-            <Marquee text="Depth • Immersion • Focus • " direction="left" speed={20} />
+            <Marquee text="LifeOfKwak • " direction="left" speed={20} />
 
             {/* Phase 3: Stack / Deep Dive */}
+            <div style={{ textAlign: 'center', paddingTop: '10vh', paddingBottom: '5vh' }}>
+                <h2>Phase III</h2>
+            </div>
             <StackGallery items={section3} />
         </div>
     );

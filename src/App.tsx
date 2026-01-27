@@ -5,7 +5,7 @@ import SmoothScrollWrapper from './components/SmoothScrollWrapper';
 import MixedGallery from './components/MixedGallery';
 import Scene from './components/Three/Scene';
 import ErrorBoundary from './components/ErrorBoundary';
-import CustomCursor from './components/CustomCursor';
+// CustomCursor removed by user request
 import Marquee from './components/Marquee';
 import SplashScreen from './components/SplashScreen';
 
@@ -52,7 +52,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <CustomCursor />
+      {/* CustomCursor removed */}
 
       {loading && <SplashScreen onComplete={() => setLoading(false)} />}
 
@@ -81,20 +81,18 @@ function App() {
               <h1 style={{ fontSize: '8vw', fontFamily: '"Playfair Display", serif', mixBlendMode: 'difference', zIndex: 20 }}>
                 World Tour
               </h1>
-              <p style={{ marginTop: '1rem', opacity: 0.6, fontSize: '1.2rem' }}>Collection 2026</p>
             </header>
 
-            <Marquee text="Discover the hidden beauty of the world • " direction="left" />
+            <Marquee text="LifeOfKwak • " direction="left" />
 
             <div style={{ minHeight: '100vh', position: 'relative', zIndex: 10 }}>
               <MixedGallery />
             </div>
 
-            <Marquee text="Keep exploring • Live the moment • " direction="right" speed={25} />
+            <Marquee text="LifeOfKwak • " direction="right" speed={25} />
 
             <footer style={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-              <h2 style={{ fontSize: '4rem', fontFamily: '"Playfair Display", serif' }}>Thank You</h2>
-              <p>© 2026 Interactive Anthology</p>
+              <h2 style={{ fontSize: '4rem', fontFamily: '"Playfair Display", serif' }}>Fin.</h2>
             </footer>
           </main>
         </SmoothScrollWrapper>

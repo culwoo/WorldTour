@@ -90,7 +90,7 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
 
                     {/* Outro Card */}
                     <div className={`${styles.itemWrapper} ${styles.outroCard}`}>
-                        <h2>End of<br />Exhibition</h2>
+                        <h2>End of<br />Phase I</h2>
                     </div>
                 </div>
             </div>
