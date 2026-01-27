@@ -4,39 +4,51 @@ import './CustomCursor.scss';
 const CustomCursor: React.FC = () => {
     const cursorRef = useRef<HTMLDivElement>(null);
     const [hovered, setHovered] = useState(false);
-    // Default to FALSE (hidden) to prevent mobile flash. Only show if proven desktop.
     const [isDesktop, setIsDesktop] = useState(false);
     const [hasMoved, setHasMoved] = useState(false);
+    const isDesktopCandidate = useRef(false);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const checkTouch = () => {
-                // If any touch event happens, this is NOT a desktop mouse-only context.
-                // Immediately kill the cursor.
-                setIsDesktop(false);
-                document.body.classList.remove('desktop-cursor-enabled');
-            };
-            window.addEventListener('touchstart', checkTouch, { once: true });
-
             const ua = navigator.userAgent;
             const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-            const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
-            const hasHover = window.matchMedia("(hover: hover)").matches;
             const isWideScreen = window.innerWidth > 1024;
 
-            // Strict condition: Must have fine pointer, HOVER capability, wide screen, and NOT be a mobile UA.
-            if (hasFinePointer && hasHover && isWideScreen && !isMobileUA) {
+            // Candidate checks: Must be wide screen and not a known mobile UA.
+            if (isWideScreen && !isMobileUA) {
+                isDesktopCandidate.current = true;
+                // Enable by default if candidate
                 setIsDesktop(true);
             }
 
+            // Hybrid Handling:
+            // 1. If touch happens, disable cursor (user is using touchscreen)
+            const handleTouch = () => {
+                setIsDesktop(false);
+                document.body.classList.remove('desktop-cursor-enabled');
+            };
+
+            // 2. If mouse moves, and we are a desktop candidate, re-enable cursor
+            const handleMouseMoveGlobal = () => {
+                if (isDesktopCandidate.current) {
+                    setIsDesktop(true);
+                    document.body.classList.add('desktop-cursor-enabled');
+                }
+            };
+
+            // We use global listeners for toggling capability
+            window.addEventListener('touchstart', handleTouch);
+            window.addEventListener('mousemove', handleMouseMoveGlobal);
+
             return () => {
-                window.removeEventListener('touchstart', checkTouch);
+                window.removeEventListener('touchstart', handleTouch);
+                window.removeEventListener('mousemove', handleMouseMoveGlobal);
             };
         }
     }, []);
 
-    // Toggle body class for system cursor hiding
     useEffect(() => {
+        // Toggle body class logic sync with state
         if (isDesktop) {
             document.body.classList.add('desktop-cursor-enabled');
         } else {
@@ -45,6 +57,7 @@ const CustomCursor: React.FC = () => {
     }, [isDesktop]);
 
     useEffect(() => {
+        // Effect for moving the actual cursor visual
         if (!isDesktop) return;
 
         const moveCursor = (e: MouseEvent) => {
