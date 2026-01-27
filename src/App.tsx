@@ -11,6 +11,7 @@ import SplashScreen from './components/SplashScreen';
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [sceneReady, setSceneReady] = useState(false);
 
   // Force refresh GSAP on mount and load
   useEffect(() => {
@@ -37,7 +38,7 @@ function App() {
     };
   }, []);
 
-  // When loading finishes (Splash done), force refresh again
+  // When loading finishes (Splash done), force refresh again AND delay heavy scene loading
   useEffect(() => {
     if (!loading) {
       // Small delay to allow DOM to settle after splash removal
@@ -47,6 +48,12 @@ function App() {
       setTimeout(() => {
         ScrollTrigger.refresh();
       }, 500);
+
+      // DELAY loading of heavy gallery assets to prevent initial stutter on home reveal.
+      // Wait for the splash exit animation to fully complete + 1.5s of smooth idle time.
+      setTimeout(() => {
+        setSceneReady(true);
+      }, 2000);
     }
   }, [loading]);
 
@@ -63,7 +70,7 @@ function App() {
       */}
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none', background: 'transparent' }}>
         <ErrorBoundary fallback={null}>
-          <Scene ready={!loading} />
+          <Scene ready={sceneReady} />
         </ErrorBoundary>
       </div>
 
