@@ -1,45 +1,54 @@
-.custom-cursor-dot {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 8px;
-    height: 8px;
-    background-color: #fff;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: difference;
-    /* transition: width 0.2s, height 0.2s; */
-    margin-left: -4px;
-    /* Center alignment fix manually if translate isn't enough context */
-    margin-top: -4px;
-    will-change: transform;
+@media (hover: hover) and (pointer: fine) {
+    .custom-cursor-dot {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 8px;
+        height: 8px;
+        background-color: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+        margin-left: -4px;
+        margin-top: -4px;
+        will-change: transform;
+    }
+
+    .custom-cursor-follower {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s ease-out, width 0.3s, height 0.3s, background-color 0.3s;
+        margin-left: -20px;
+        margin-top: -20px;
+        mix-blend-mode: difference;
+        will-change: transform;
+    }
+
+    .custom-cursor-follower.hovered {
+        width: 80px;
+        height: 80px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: transparent;
+        margin-left: -40px;
+        margin-top: -40px;
+    }
 }
 
-.custom-cursor-follower {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 40px;
-    height: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s ease-out, width 0.3s, height 0.3s, background-color 0.3s;
-    margin-left: -20px;
-    margin-top: -20px;
-    mix-blend-mode: difference;
-    will-change: transform;
-}
+@media (hover: none),
+(pointer: coarse) {
 
-.custom-cursor-follower.hovered {
-    width: 80px;
-    height: 80px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: transparent;
-    margin-left: -40px;
-    margin-top: -40px;
+    .custom-cursor-dot,
+    .custom-cursor-follower {
+        display: none !important;
+    }
 }

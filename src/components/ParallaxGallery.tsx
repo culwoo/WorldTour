@@ -75,13 +75,9 @@ const ParallaxGallery: React.FC<Props> = ({ items }) => {
                 </div>
                 <div className={styles.evenColumn}>
                     {col2.map((img, i) => {
-                        // User requested items 14 and 16 (last 2 in col2) to be moved up.
-                        // col2 has 4 items. So index 2 and 3.
-                        // Default marginTop is 20vh. Let's reduce it for them.
-                        const marginTop = i >= 2 ? '5vh' : '20vh'; // Move up significantly
-
+                        const isLargeGap = i < 2;
                         return (
-                            <div key={img.id} className={styles.verticalItem} style={{ marginTop }}>
+                            <div key={img.id} className={`${styles.verticalItem} ${isLargeGap ? styles.largeGap : ''}`}>
                                 <GalleryItem
                                     id={img.id}
                                     url={img.url}

@@ -42,9 +42,19 @@
     }
 }
 
+.largeGap {
+    margin-top: 20vh;
+
+    @media (max-width: 768px) {
+        margin-top: 5vh;
+        /* Reset to standard small gap on mobile */
+    }
+}
+
 /* Stack Section Styles */
 .stackSection {
     height: 100vh;
+    height: 100dvh;
     /* Long scroll area */
     position: relative;
     z-index: 10;
@@ -52,6 +62,7 @@
 
 .stackContainer {
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     display: flex;
     align-items: center;
@@ -88,6 +99,8 @@
         width: 80vw;
         height: 60vh;
         /* Mobile specific sizing */
+        /* Move slightly down visually if needed, but center (50%) usually works best with dvh */
+        /* User said "too high", verify 100dvh first. */
     }
 }
 
@@ -100,10 +113,12 @@
     .oddColumn,
     .evenColumn {
         width: 90%;
-        gap: 10vh;
+        gap: 5vh;
+        /* Reduced from 10vh to tighten generic gaps */
     }
 
     .oddColumn {
-        margin-bottom: 10vh;
+        margin-bottom: 5vh;
+        /* Reduced from 10vh */
     }
 }

@@ -152,7 +152,7 @@ export const images = [
         url: '/images/IMG_9109.JPG',
         title: 'Capture 9109',
         author: 'Cheolwoo',
-        orientation: 'landscape'
+        orientation: 'portrait'
     },
     {
         id: 23,
