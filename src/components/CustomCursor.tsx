@@ -4,27 +4,26 @@ import './CustomCursor.scss';
 const CustomCursor: React.FC = () => {
     const cursorRef = useRef<HTMLDivElement>(null);
     const [hovered, setHovered] = useState(false);
-    const [isTouch, setIsTouch] = useState(false);
+    // Default to FALSE (hidden) to prevent mobile flash. Only show if proven desktop.
+    const [isDesktop, setIsDesktop] = useState(false);
     const [hasMoved, setHasMoved] = useState(false);
 
     useEffect(() => {
-        // Check for touch/mobile device
         if (typeof window !== 'undefined') {
             const ua = navigator.userAgent;
             const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+            const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+            const isWideScreen = window.innerWidth > 1024;
 
-            const isTouchDevice =
-                window.matchMedia("(pointer: coarse)").matches ||
-                ('ontouchstart' in window) ||
-                (navigator.maxTouchPoints > 0) ||
-                (window.innerWidth <= 1024) ||
-                isMobileUA;
-            setIsTouch(isTouchDevice);
+            // Strict condition: Must have fine pointer, wide screen, and NOT be a mobile UA.
+            if (hasFinePointer && isWideScreen && !isMobileUA) {
+                setIsDesktop(true);
+            }
         }
     }, []);
 
     useEffect(() => {
-        if (isTouch) return;
+        if (!isDesktop) return;
 
         const moveCursor = (e: MouseEvent) => {
             if (!hasMoved) setHasMoved(true);
@@ -35,7 +34,6 @@ const CustomCursor: React.FC = () => {
 
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-            // Check if hovering over interactive elements
             if (
                 target.tagName === 'A' ||
                 target.tagName === 'BUTTON' ||
@@ -55,9 +53,9 @@ const CustomCursor: React.FC = () => {
             window.removeEventListener('mousemove', moveCursor);
             window.removeEventListener('mouseover', handleMouseOver);
         };
-    }, [isTouch, hasMoved]);
+    }, [isDesktop, hasMoved]);
 
-    if (isTouch) return null;
+    if (!isDesktop) return null;
 
     return (
         <div
