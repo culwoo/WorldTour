@@ -112,22 +112,24 @@
     .columnWrapper {
         flex-direction: column;
         align-items: center;
+        gap: 10vh;
+        /* Gap between the two columns stack */
     }
 
     .verticalItem {
         margin-top: 0 !important;
-        margin-bottom: 5vh !important;
+        margin-bottom: 0 !important;
+        /* Remove item margins, rely on flex gap */
     }
 
     .oddColumn,
     .evenColumn {
         width: 90%;
-        gap: 5vh;
-        /* Reduced from 10vh to tighten generic gaps */
+        gap: 10vh;
+        /* Gap between items inside columns */
     }
 
     .oddColumn {
         margin-bottom: 0;
-        /* Reduced from 10vh */
     }
 }

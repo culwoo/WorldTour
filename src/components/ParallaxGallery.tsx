@@ -20,35 +20,39 @@ const ParallaxGallery: React.FC<Props> = ({ items }) => {
     useGSAP(() => {
         if (!containerRef.current) return;
 
-        const oddColumns = gsap.utils.toArray<HTMLElement>('.' + styles.oddColumn);
-        const evenColumns = gsap.utils.toArray<HTMLElement>('.' + styles.evenColumn);
+        const mm = gsap.matchMedia();
 
-        // Parallax Effect
-        // Odd columns move up faster
-        oddColumns.forEach(p => {
-            gsap.to(p, {
-                y: -100,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true
-                }
+        mm.add("(min-width: 769px)", () => {
+            const oddColumns = gsap.utils.toArray<HTMLElement>('.' + styles.oddColumn);
+            const evenColumns = gsap.utils.toArray<HTMLElement>('.' + styles.evenColumn);
+
+            // Parallax Effect
+            // Odd columns move up faster
+            oddColumns.forEach(p => {
+                gsap.to(p, {
+                    y: -100,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: containerRef.current,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
             });
-        });
 
-        // Even columns move down (or slower up)
-        evenColumns.forEach(p => {
-            gsap.to(p, {
-                y: 100,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true
-                }
+            // Even columns move down (or slower up)
+            evenColumns.forEach(p => {
+                gsap.to(p, {
+                    y: 100,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: containerRef.current,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
             });
         });
 
