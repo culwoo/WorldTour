@@ -103,8 +103,10 @@
 
     .itemWrapper {
         img {
-            max-width: 85vw !important;
-            max-height: 60vh !important;
+            /* Uncap width so landscape images don't shrink. 
+               This ensures Height is the ONLY limiter, creating a consistent strip. */
+            max-width: none !important;
+            max-height: 55vh !important;
         }
     }
 }
