@@ -44,6 +44,11 @@
     }
 }
 
+/* Only hide system cursor when custom cursor is active */
+:global(body.desktop-cursor-enabled) {
+    cursor: none;
+}
+
 @media (max-width: 1024px),
 (hover: none),
 (pointer: coarse) {

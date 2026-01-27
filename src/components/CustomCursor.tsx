@@ -13,14 +13,24 @@ const CustomCursor: React.FC = () => {
             const ua = navigator.userAgent;
             const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
             const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+            const hasHover = window.matchMedia("(hover: hover)").matches;
             const isWideScreen = window.innerWidth > 1024;
 
-            // Strict condition: Must have fine pointer, wide screen, and NOT be a mobile UA.
-            if (hasFinePointer && isWideScreen && !isMobileUA) {
+            // Strict condition: Must have fine pointer, HOVER capability, wide screen, and NOT be a mobile UA.
+            if (hasFinePointer && hasHover && isWideScreen && !isMobileUA) {
                 setIsDesktop(true);
             }
         }
     }, []);
+
+    // Toggle body class for system cursor hiding
+    useEffect(() => {
+        if (isDesktop) {
+            document.body.classList.add('desktop-cursor-enabled');
+        } else {
+            document.body.classList.remove('desktop-cursor-enabled');
+        }
+    }, [isDesktop]);
 
     useEffect(() => {
         if (!isDesktop) return;
