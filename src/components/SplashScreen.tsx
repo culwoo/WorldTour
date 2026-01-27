@@ -50,7 +50,7 @@ const SplashScreen: React.FC<Props> = ({ onComplete }) => {
                     });
 
                     tl.to(`.${styles.title}`, { opacity: 0, duration: 0.5 });
-                    tl.to(counterRef.current, { opacity: 0, duration: 0.5 }, "<");
+                    tl.to(`.${styles.counterWrapper}`, { opacity: 0, duration: 0.5 }, "<");
                     tl.to(containerRef.current, {
                         yPercent: -100,
                         duration: 1,
