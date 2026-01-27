@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SmoothScrollWrapper from './components/SmoothScrollWrapper';
 import MixedGallery from './components/MixedGallery';
 import Scene from './components/Three/Scene';
@@ -9,6 +11,44 @@ import SplashScreen from './components/SplashScreen';
 
 function App() {
   const [loading, setLoading] = useState(true);
+
+  // Force refresh GSAP on mount and load
+  useEffect(() => {
+    // 1. On window load (all assets loaded)
+    const handleLoad = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('load', handleLoad);
+
+    // 2. Periodic checks for the first few seconds (fallback for slow images)
+    const interval = setInterval(() => {
+      ScrollTrigger.refresh();
+    }, 1000);
+
+    // Clear interval after 5 seconds
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+    }, 5000);
+
+    return () => {
+      window.removeEventListener('load', handleLoad);
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  // When loading finishes (Splash done), force refresh again
+  useEffect(() => {
+    if (!loading) {
+      // Small delay to allow DOM to settle after splash removal
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 500);
+    }
+  }, [loading]);
 
   return (
     <div className="app-container">

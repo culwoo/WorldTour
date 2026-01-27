@@ -42,6 +42,28 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
 
     }, { scope: wrapperRef, dependencies: [items] });
 
+    // Handle dynamic image loading causing layout shifts
+    React.useEffect(() => {
+        const images = containerRef.current?.querySelectorAll('img');
+        if (!images) return;
+
+        const handleImageLoad = () => {
+            ScrollTrigger.refresh();
+        };
+
+        images.forEach(img => {
+            if (img.complete) {
+                handleImageLoad();
+            } else {
+                img.addEventListener('load', handleImageLoad);
+            }
+        });
+
+        return () => {
+            images.forEach(img => img.removeEventListener('load', handleImageLoad));
+        };
+    }, [items]);
+
     return (
         <div ref={wrapperRef} className={styles.scrollWrapper}>
             <div className={styles.stickyContainer}>

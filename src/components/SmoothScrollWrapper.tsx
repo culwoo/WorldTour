@@ -11,6 +11,10 @@ interface Props {
 
 const SmoothScrollWrapper: React.FC<Props> = ({ children }) => {
   useEffect(() => {
+    // Mobile Improvement: Normalize scroll prevents address bar jumps and unifies touch/wheel physics
+    // This is critical for pinned sections on mobile.
+    ScrollTrigger.normalizeScroll(true);
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -18,8 +22,8 @@ const SmoothScrollWrapper: React.FC<Props> = ({ children }) => {
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
-      syncTouch: false,
-      touchMultiplier: 2,
+      syncTouch: true, // Enable smooth touch handling
+      touchMultiplier: 1.5, // Reduce sensitivity slightly
     });
 
     // Integrate with GSAP ScrollTrigger
