@@ -7,13 +7,19 @@ import { Preload } from '@react-three/drei';
 import FloatingHeroImages from './FloatingHeroImages';
 import PersistentGeo from './PersistentGeo';
 
-const SceneContent: React.FC = () => {
+interface SceneProps {
+    ready: boolean;
+}
+
+const SceneContent: React.FC<{ ready: boolean }> = ({ ready }) => {
     const items = useGalleryStore((state) => state.items);
     return (
         <>
             <FloatingHeroImages />
             <PersistentGeo />
-            {items.filter(item => item.useWebGL !== false).map((item) => (
+
+            {/* Lazy load the rest of the gallery only after Splash flows out */}
+            {ready && items.filter(item => item.useWebGL !== false).map((item) => (
                 <GalleryPlane key={item.id} item={item} />
             ))}
             <Preload all />
@@ -21,7 +27,7 @@ const SceneContent: React.FC = () => {
     );
 };
 
-const Scene: React.FC = () => {
+const Scene: React.FC<SceneProps> = ({ ready }) => {
     return (
         <Canvas
             gl={{ alpha: true }}
@@ -40,7 +46,7 @@ const Scene: React.FC = () => {
         >
             <PerspectiveCameraHelper />
             <Suspense fallback={null}>
-                <SceneContent />
+                <SceneContent ready={ready} />
             </Suspense>
         </Canvas>
     );

@@ -16,9 +16,9 @@ const SplashScreen: React.FC<Props> = ({ onComplete }) => {
     // We keep a 'display' progress to animate smoothly to the real 'progress'
     const progressRef = useRef({ val: 0 });
 
-    // Preload images immediately when Splash mounts
+    // Preload ONLY the hero images (first 6) immediately
     useEffect(() => {
-        images.forEach((img) => {
+        images.slice(0, 6).forEach((img) => {
             const image = new Image();
             image.src = img.url;
             useTexture.preload(img.url);
