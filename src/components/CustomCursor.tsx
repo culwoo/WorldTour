@@ -10,6 +10,14 @@ const CustomCursor: React.FC = () => {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const checkTouch = () => {
+                // If any touch event happens, this is NOT a desktop mouse-only context.
+                // Immediately kill the cursor.
+                setIsDesktop(false);
+                document.body.classList.remove('desktop-cursor-enabled');
+            };
+            window.addEventListener('touchstart', checkTouch, { once: true });
+
             const ua = navigator.userAgent;
             const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
             const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
@@ -20,6 +28,10 @@ const CustomCursor: React.FC = () => {
             if (hasFinePointer && hasHover && isWideScreen && !isMobileUA) {
                 setIsDesktop(true);
             }
+
+            return () => {
+                window.removeEventListener('touchstart', checkTouch);
+            };
         }
     }, []);
 

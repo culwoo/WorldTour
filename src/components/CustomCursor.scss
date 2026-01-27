@@ -1,14 +1,28 @@
-@media (hover: hover) and (pointer: fine) {
+/* Default State: HIDDEN */
+.custom-cursor-dot,
+.custom-cursor-follower {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+    position: fixed;
+}
+
+/* Only active when JS confirms desktop environment */
+:global(body.desktop-cursor-enabled) {
+    cursor: none;
+    /* Hide system cursor */
+
     .custom-cursor-dot {
-        position: fixed;
+        display: block;
+        opacity: 1;
+        /* Base opacity, specific opacity handled by inline style */
         top: 0;
         left: 0;
         width: 8px;
         height: 8px;
         background-color: #fff;
         border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
         transform: translate(-50%, -50%);
         mix-blend-mode: difference;
         margin-left: -4px;
@@ -17,14 +31,14 @@
     }
 
     .custom-cursor-follower {
-        position: fixed;
+        display: block;
+        opacity: 1;
         top: 0;
         left: 0;
         width: 40px;
         height: 40px;
         border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 50%;
-        pointer-events: none;
         z-index: 9998;
         transform: translate(-50%, -50%);
         transition: transform 0.1s ease-out, width 0.3s, height 0.3s, background-color 0.3s;
@@ -41,22 +55,5 @@
         border-color: transparent;
         margin-left: -40px;
         margin-top: -40px;
-    }
-}
-
-/* Only hide system cursor when custom cursor is active */
-:global(body.desktop-cursor-enabled) {
-    cursor: none;
-}
-
-@media (max-width: 1024px),
-(hover: none),
-(pointer: coarse) {
-
-    .custom-cursor-dot,
-    .custom-cursor-follower {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
     }
 }
