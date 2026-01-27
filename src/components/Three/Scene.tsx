@@ -11,27 +11,9 @@ interface SceneProps {
     ready: boolean;
 }
 
-const SceneContent: React.FC<{ ready: boolean }> = ({ ready }) => {
-    const items = useGalleryStore((state) => state.items);
-    return (
-        <>
-            <FloatingHeroImages />
-            <PersistentGeo />
-
-            {/* Lazy load the rest of the gallery only after Splash flows out */}
-            {ready && (
-                <Suspense fallback={null}>
-                    {items.filter(item => item.useWebGL !== false).map((item) => (
-                        <GalleryPlane key={item.id} item={item} />
-                    ))}
-                </Suspense>
-            )}
-            <Preload all />
-        </>
-    );
-};
-
 const Scene: React.FC<SceneProps> = ({ ready }) => {
+    const items = useGalleryStore((state) => state.items);
+
     return (
         <Canvas
             gl={{ alpha: true }}
@@ -40,18 +22,30 @@ const Scene: React.FC<SceneProps> = ({ ready }) => {
                 height: '100%',
                 pointerEvents: 'none',
             }}
-            // Orthographic camera is easier for exact pixel match, but Perspective is nicer for 3D effects.
-            // Let's stick to Perspective and calcluate FOV logic if needed.
-            // Or simple solution: 1 unit = 1 pixel at z=0.
-            camera={{ position: [0, 0, 600], fov: 75 }} // We'll adjust this manually purely for simplicity first?
-        // Better: Use 'views' or just configure camera via `resize` handler, but R3F does auto-adjust.
-        // To get 1px = 1 unit:
-        // fov = 2 * atan( (window.innerHeight / 2) / 600 ) * (180 / PI)
+            camera={{ position: [0, 0, 600], fov: 75 }}
         >
             <PerspectiveCameraHelper />
+
+            {/* 1. Hero Images: Independent Suspense layer. 
+                These are preloaded in Splash, so they should appear instantly. */}
             <Suspense fallback={null}>
-                <SceneContent ready={ready} />
+                <FloatingHeroImages />
+                <PersistentGeo />
             </Suspense>
+
+            {/* 2. Main Gallery: Independent Suspense layer.
+                Loaded only when 'ready' is true. 
+                Because it's a separate Suspense sibling, its loading state 
+                won't affect the visibility of Hero Images. */}
+            {ready && (
+                <Suspense fallback={null}>
+                    {items.filter(item => item.useWebGL !== false).map((item) => (
+                        <GalleryPlane key={item.id} item={item} />
+                    ))}
+                </Suspense>
+            )}
+
+            <Preload all />
         </Canvas>
     );
 };
