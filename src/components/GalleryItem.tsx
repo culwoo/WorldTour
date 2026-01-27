@@ -7,6 +7,7 @@ interface Props {
     id: number;
     url: string;
     title: string;
+    displayLabel: string;
     zPriority?: number;
 }
 

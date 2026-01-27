@@ -16,16 +16,21 @@ const Gallery: React.FC = () => {
     return (
         <div className={styles.gallerySection}>
             <div className={styles.gallery}>
-                {columns.map((items, colIndex) => (
+                {columns.map((col, colIndex) => (
                     <div key={colIndex} className={styles.column}>
-                        {items.map((item) => (
-                            <GalleryItem
-                                key={item.id}
-                                id={item.id}
-                                url={item.url}
-                                title={item.title}
-                            />
-                        ))}
+                        {col.map((img, index) => {
+                            // Use item id for label
+                            const label = img.id.toString().padStart(2, '0');
+                            return (
+                                <GalleryItem
+                                    key={img.id}
+                                    id={img.id}
+                                    url={img.url}
+                                    title={img.title}
+                                    displayLabel={label}
+                                />
+                            );
+                        })}
                     </div>
                 ))}
             </div>
@@ -34,4 +39,3 @@ const Gallery: React.FC = () => {
 };
 
 export default Gallery;
-

@@ -100,6 +100,7 @@ const StackGallery: React.FC<Props> = ({ items }) => {
                             id={img.id}
                             url={img.url}
                             title={img.title}
+                            displayLabel={img.id.toString().padStart(2, '0')}
                             // @ts-ignore
                             orientation={img.orientation}
                             zPriority={100 + index} // Pass explicit Z priority to WebGL

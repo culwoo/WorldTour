@@ -64,9 +64,9 @@
     display: block;
     width: 100%;
     height: auto;
-    opacity: 0;
-    /* Hidden but takes up space */
-    pointer-events: none;
+    opacity: 1;
+    /* Was 0, restored to 1 to ensure visibility */
+    /* pointer-events: none; - Removed to allow interaction if needed */
 }
 
 /* Info styling */

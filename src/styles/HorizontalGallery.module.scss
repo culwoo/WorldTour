@@ -50,10 +50,9 @@
         height: auto !important;
         width: auto !important;
 
-        /* The key fix: constrain dimension directly */
-        /* Increased to 65vh based on user feedback to be larger */
-        max-height: 65vh !important;
-        max-width: 80vw !important;
+        /* Sized up to match Phase 2/3 scale (approx 85% viewport) */
+        max-height: 85vh !important;
+        max-width: 90vw !important;
 
         /* Ensure natural aspect ratio is respected strictly */
         object-fit: contain !important;

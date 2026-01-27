@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import GalleryItem from './GalleryItem';
-
+import type { GalleryItemState } from '../store/useGalleryStore';
 
 // We import styles for layout
 import styles from '../styles/MixedGallery.module.scss';
@@ -68,8 +68,7 @@ const ParallaxGallery: React.FC<Props> = ({ items }) => {
                                 id={img.id}
                                 url={img.url}
                                 title={img.title}
-                                // @ts-ignore
-                                orientation={img.orientation}
+                                displayLabel={img.id.toString().padStart(2, '0')}
                             />
                         </div>
                     ))}
@@ -87,6 +86,7 @@ const ParallaxGallery: React.FC<Props> = ({ items }) => {
                                     id={img.id}
                                     url={img.url}
                                     title={img.title}
+                                    displayLabel={img.id.toString().padStart(2, '0')}
                                 />
                             </div>
                         );

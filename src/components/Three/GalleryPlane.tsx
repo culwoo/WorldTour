@@ -18,7 +18,7 @@ const GalleryPlane: React.FC<Props> = ({ item }) => {
     // Note: useTexture suspends, so this component needs to be wrapped in Suspense (which Canvas usually provides or we have one up top)
     const texture = useTexture(item.url);
 
-    useFrame(() => {
+    useFrame((state) => {
         if (!item.ref || !meshRef.current) return;
 
         const { width, height, top, left } = item.ref.getBoundingClientRect();
