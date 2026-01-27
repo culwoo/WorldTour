@@ -13,7 +13,8 @@ const CustomCursor: React.FC = () => {
             const isTouchDevice =
                 window.matchMedia("(pointer: coarse)").matches ||
                 ('ontouchstart' in window) ||
-                (navigator.maxTouchPoints > 0);
+                (navigator.maxTouchPoints > 0) ||
+                (window.innerWidth <= 1024);
             setIsTouch(isTouchDevice);
         }
     }, []);
