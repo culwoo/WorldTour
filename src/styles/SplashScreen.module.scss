@@ -6,8 +6,9 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
+    /* Mobile viewport fix for url bars */
     background-color: #050505;
-    /* Deep black matches site theme */
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -19,6 +20,15 @@
     text-align: center;
     color: #fff;
     font-family: "Playfair Display", serif;
+    width: 100%;
+    /* Ensure content centers properly */
+    position: relative;
+    /* Context for absolute children if needed, though counter is outside content flow but inside splash */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .title {
@@ -38,9 +48,7 @@
     bottom: 5rem;
     right: 5rem;
     font-family: "Inter", sans-serif;
-    /* Technical/Clean font for numbers */
     font-variant-numeric: tabular-nums;
-    /* Prevents jitter */
     font-size: 4rem;
     font-weight: 300;
     display: flex;
@@ -64,8 +72,13 @@
     }
 
     .counterWrapper {
-        bottom: 2rem;
-        right: 2rem;
-        font-size: 2.5rem;
+        bottom: auto;
+        top: auto;
+        position: relative;
+        right: auto;
+        margin-top: 2rem;
+        font-size: 2rem;
+        justify-content: center;
+        opacity: 0.7;
     }
 }
