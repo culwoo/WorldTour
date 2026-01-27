@@ -10,11 +10,15 @@ const CustomCursor: React.FC = () => {
     useEffect(() => {
         // Check for touch/mobile device
         if (typeof window !== 'undefined') {
+            const ua = navigator.userAgent;
+            const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+
             const isTouchDevice =
                 window.matchMedia("(pointer: coarse)").matches ||
                 ('ontouchstart' in window) ||
                 (navigator.maxTouchPoints > 0) ||
-                (window.innerWidth <= 1024);
+                (window.innerWidth <= 1024) ||
+                isMobileUA;
             setIsTouch(isTouchDevice);
         }
     }, []);

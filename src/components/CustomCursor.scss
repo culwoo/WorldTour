@@ -51,5 +51,7 @@
     .custom-cursor-dot,
     .custom-cursor-follower {
         display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
     }
 }
