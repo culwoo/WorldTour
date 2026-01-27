@@ -13,7 +13,7 @@ const SceneContent: React.FC = () => {
         <>
             <FloatingHeroImages />
             <PersistentGeo />
-            {items.map((item) => (
+            {items.filter(item => item.useWebGL !== false).map((item) => (
                 <GalleryPlane key={item.id} item={item} />
             ))}
             <Preload all />

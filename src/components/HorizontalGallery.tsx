@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -7,7 +7,7 @@ import styles from '../styles/HorizontalGallery.module.scss';
 
 gsap.registerPlugin(ScrollTrigger);
 
-import type { GalleryItemState } from '../store/useGalleryStore';
+
 
 interface Props {
     items: typeof import('../data/images').images; // Correctly reference the type of the images array
@@ -22,11 +22,11 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
     useGSAP(() => {
         if (!containerRef.current || !wrapperRef.current) return;
 
-        const sections = gsap.utils.toArray<HTMLElement>('.' + styles.itemWrapper);
+
         // Better: let the CSS layout define width and we calculate scroll amount
 
         // Horizontal Scroll
-        const scrollTween = gsap.to(containerRef.current, {
+        gsap.to(containerRef.current, {
             x: () => -(containerRef.current!.scrollWidth - window.innerWidth),
             ease: "none",
             scrollTrigger: {

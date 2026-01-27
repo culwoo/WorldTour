@@ -103,7 +103,8 @@ const StackGallery: React.FC<Props> = ({ items }) => {
                             displayLabel={img.id.toString().padStart(2, '0')}
                             // @ts-ignore
                             orientation={img.orientation}
-                            zPriority={100 + index} // Pass explicit Z priority to WebGL
+                            zPriority={100 + index} // Pass explicit Z priority to WebGL (though ignored if !useWebGL)
+                            useWebGL={false} // Disable WebGL for stack to avoid rotation mismatch
                         />
                     </div>
                 ))}

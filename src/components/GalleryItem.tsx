@@ -9,9 +9,10 @@ interface Props {
     title: string;
     displayLabel: string;
     zPriority?: number;
+    useWebGL?: boolean;
 }
 
-const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0 }) => {
+const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0, useWebGL = true }) => {
     const ref = useRef<HTMLDivElement>(null);
     const registerItem = useGalleryStore((state) => state.registerItem);
     const unregisterItem = useGalleryStore((state) => state.unregisterItem);
@@ -19,10 +20,10 @@ const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0 }) => {
 
     useLayoutEffect(() => {
         if (ref.current) {
-            registerItem(id, url, ref.current, zPriority);
+            registerItem(id, url, ref.current, zPriority, useWebGL);
         }
         return () => unregisterItem(id);
-    }, [id, url, registerItem, unregisterItem, zPriority]);
+    }, [id, url, registerItem, unregisterItem, zPriority, useWebGL]);
 
     // We don't need to force aspect ratio classes since we want to align with the real image size.
     // The width is 100% (of the column), and height is auto.

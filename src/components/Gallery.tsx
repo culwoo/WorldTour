@@ -18,7 +18,7 @@ const Gallery: React.FC = () => {
             <div className={styles.gallery}>
                 {columns.map((col, colIndex) => (
                     <div key={colIndex} className={styles.column}>
-                        {col.map((img, index) => {
+                        {col.map((img) => {
                             // Use item id for label
                             const label = img.id.toString().padStart(2, '0');
                             return (
