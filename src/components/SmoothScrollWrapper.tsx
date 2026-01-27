@@ -16,14 +16,14 @@ const SmoothScrollWrapper: React.FC<Props> = ({ children }) => {
     ScrollTrigger.normalizeScroll(true);
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.0, // Reduced from 1.2 for snappier feel
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
-      syncTouch: true, // Enable smooth touch handling
-      touchMultiplier: 1.5, // Reduce sensitivity slightly
+      syncTouch: true,
+      touchMultiplier: 0.7, // Reduced from 1.5 to make it slower/heavier on mobile
     });
 
     // Integrate with GSAP ScrollTrigger
