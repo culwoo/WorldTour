@@ -25,6 +25,7 @@ const SmoothScrollWrapper: React.FC<Props> = ({ children }) => {
 
     // Disable Lenis on Mobile to ensure native sticky/fixed behavior works perfectly
     if (isMobile) {
+      ScrollTrigger.normalizeScroll(false); // Validated disable
       return;
     }
 

@@ -72,6 +72,30 @@ function App() {
     }
   }, [loading]);
 
+  // BRUTE FORCE SCROLL UNLOCKER FOR MOBILE
+  useEffect(() => {
+    const unlockScroll = () => {
+      if (window.innerWidth <= 1024) {
+        console.log("Forcing scroll unlock...");
+        document.body.style.overflow = 'auto';
+        document.body.style.overflowY = 'scroll';
+        document.body.style.height = 'auto';
+        document.documentElement.style.overflow = 'auto';
+        document.documentElement.style.overflowY = 'scroll';
+        document.documentElement.style.height = 'auto';
+        document.body.style.touchAction = 'auto';
+      }
+    };
+
+    // Run once immediately
+    unlockScroll();
+
+    // Provide a backup pulse to ensure it stays unlocked
+    const intervalId = setInterval(unlockScroll, 2000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div className="app-container">
       {/* CustomCursor removed */}
