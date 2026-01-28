@@ -19,8 +19,15 @@ function App() {
       setSceneReady(true);
     }, 100);
 
+    // SAFETY FALLBACK: Force loading to end after 4 seconds max
+    // This prevents the splash screen from blocking the UI if WebGL loading stalls on mobile.
+    const safetyTimer = window.setTimeout(() => {
+      setLoading(false);
+    }, 4000);
+
     return () => {
       window.clearTimeout(warmupTimer);
+      window.clearTimeout(safetyTimer);
     };
   }, []);
 
