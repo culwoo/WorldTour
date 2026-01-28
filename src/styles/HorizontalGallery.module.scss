@@ -100,11 +100,38 @@
 }
 
 @media (max-width: 768px) {
+    .scrollWrapper {
+        /* On mobile, wrapping div just holds the scrollable area */
+        height: auto;
+    }
+
+    .stickyContainer {
+        /* Enable Native Horizontal Scroll on Mobile */
+        height: 65vh;
+        /* Fixed height for the strip */
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        display: block;
+        /* Required for native scroll container */
+        white-space: nowrap;
+    }
+
     .track {
+        display: inline-flex;
+        /* Use inline-flex to let children sit in a row */
+        width: max-content;
+        /* Ensure container expands to fit all items */
+        height: 100%;
         padding: 0 5vw;
+        gap: 5vw;
     }
 
     .itemWrapper {
+        display: inline-flex;
+        /* Maintain flex behavior inside */
+        vertical-align: middle;
+
         img {
             /* Uncap width so landscape images don't shrink. 
                This ensures Height is the ONLY limiter, creating a consistent strip. */

@@ -24,15 +24,15 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
     useGSAP(() => {
         if (!containerRef.current || !wrapperRef.current) return;
 
-
-        // Better: let the CSS layout define width and we calculate scroll amount
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        if (isMobile) return; // Disable GSAP scrolljacking on mobile
 
         // Horizontal Scroll
         gsap.to(containerRef.current, {
             x: () => -(containerRef.current!.scrollWidth - window.innerWidth),
             ease: "none",
             scrollTrigger: {
-                id: "horizontal-gallery-trigger", // Added ID for clamping logic
+                id: "horizontal-gallery-trigger",
                 trigger: wrapperRef.current,
                 start: "top top",
                 end: () => `+=${containerRef.current!.scrollWidth}`,
