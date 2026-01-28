@@ -15,6 +15,7 @@
 
 /* UNIVERSAL SCROLL FIX */
 * {
+  touch-action: auto !important;
   -webkit-tap-highlight-color: transparent;
 }
 
