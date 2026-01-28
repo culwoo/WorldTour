@@ -88,13 +88,15 @@ button:focus-visible {
 }
 
 /* MOBILE FIXES: Force Enable Scroll */
-/* MOBILE FIXES: Force Enable Scroll */
 @media (max-width: 1024px) {
 
   html,
   body {
+    /* Allow browser to handle scroll naturally */
     height: auto !important;
-    overflow-y: scroll !important;
+    min-height: 100vh !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
     touch-action: auto !important;
   }
@@ -108,8 +110,8 @@ button:focus-visible {
   #root,
   .app-container {
     height: auto !important;
-    /* Allow expansion */
-    overflow-x: hidden;
+    min-height: 100vh !important;
     overflow-y: visible !important;
+    overflow-x: hidden !important;
   }
 }
