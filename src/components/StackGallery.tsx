@@ -9,91 +9,106 @@ import galleryStyles from '../styles/Gallery.module.scss';
 
 interface Props {
     items: typeof import('../data/images').images;
+    title?: string;
 }
 
 gsap.registerPlugin(ScrollTrigger);
 
-const StackGallery: React.FC<Props> = ({ items }) => {
-    const wrapperRef = useRef<HTMLDivElement>(null);
+const StackGallery: React.FC<Props> = ({ items, title }) => {
+    // containerRef will be the element that gets PINNED
     const containerRef = useRef<HTMLDivElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
-        if (!wrapperRef.current || !containerRef.current) return;
+        if (!containerRef.current) return;
 
         const cards = gsap.utils.toArray<HTMLElement>('.' + styles.stackCard);
 
-        // Stack Effect used to be here
+        // Setup initial Card states
+        cards.forEach((card, i) => {
+            const randomRotation = Math.sin(i * 12.34) * 4;
+            gsap.set(card, {
+                xPercent: -50,
+                yPercent: 120, // Start just below the viewport
+                opacity: 0,
+                rotation: randomRotation,
+                scale: 0.9
+            });
+        });
 
-        // Stack Effect
-        // We pin the container for X amount of scroll pixels
-        // As we scroll, cards slide UP from bottom (or scale in)
+        const scrollDistance = Math.max(2000, items.length * 800);
 
         const tl = gsap.timeline({
             scrollTrigger: {
-                trigger: wrapperRef.current,
-                start: "top top", // Pin when top hits top
-                end: "+=4000", // Slower animation (more scroll distance)
+                trigger: containerRef.current, // PIN ONLY THE CARD CONTAINER
+                start: "top top",
+                end: `+=${scrollDistance}`,
                 pin: true,
                 scrub: 1,
-                anticipatePin: 1
+                anticipatePin: 1,
             }
         });
 
+        // Animation Sequence
         cards.forEach((card, i) => {
-            const randomRotation = Math.sin(i * 12.34) * 4;
+            // Cards fly in sequentially
+            // First card flies in immediately
+            const startTime = i * 0.5; // Stagger them simply
 
-            if (i === 0) {
-                // First card: Center it immediately.
-                // CSS has left: 50%, top: 50%. We need translate(-50%, -50%) to center.
-                // We set xPercent, yPercent ensures robust centering unlike raw transform strings.
-                gsap.set(card, {
-                    xPercent: -50,
-                    yPercent: -50,
-                    rotation: randomRotation,
-                    opacity: 1
-                });
-                return;
-            }
-
-            // Other cards: Start BELOW the view (yPercent 150) but CENTERED horizontally (xPercent -50)
-            gsap.set(card, {
-                xPercent: -50,
-                yPercent: 150,
-                opacity: 0,
-                rotation: randomRotation
-            });
-
-            // Animate UP to center (-50, -50)
             tl.to(card, {
-                yPercent: -50,
-                // xPercent is already -50, no need to touch it, it will persist
+                yPercent: -50, // Center vertically
+                xPercent: -50, // Center horizontally
                 opacity: 1,
+                scale: 1,
                 duration: 1,
-                ease: "power2.out"
-            }, ">-0.2"); // Overlap slightly for flow
+                ease: "power3.out"
+            }, startTime);
 
-            // Note: We do NOT animate rotation here, so it stays fixed (tilted) as established by user.
-
-            // previous info fade out
-            const prevCard = cards[i - 1];
-            const prevInfo = prevCard.querySelector('.' + galleryStyles.info);
-            if (prevInfo) {
-                tl.to(prevInfo, { opacity: 0, duration: 0.5 }, "<");
+            // Previous Info Fade Out
+            if (i > 0) {
+                const prevCard = cards[i - 1];
+                const prevInfo = prevCard.querySelector('.' + galleryStyles.info);
+                if (prevInfo) {
+                    tl.to(prevInfo, { opacity: 0, duration: 0.5 }, "<+0.3");
+                }
             }
         });
 
-    }, { scope: wrapperRef });
+        // Final buffer
+        tl.to({}, { duration: 0.5 });
+
+    }, { scope: wrapperRef, dependencies: [items] });
 
     return (
-        <div ref={wrapperRef} className={styles.stackSection}>
-            <div ref={containerRef} className={styles.stackContainer}>
+        <div ref={wrapperRef} className={styles.stackSection} style={{ position: 'relative', zIndex: 50, background: 'transparent' }}>
 
+            {/* 1. Title is part of normal flow - it scrolls AWAY naturally */}
+            {title && (
+                <div style={{
+                    textAlign: 'center',
+                    paddingTop: '15vh',
+                    paddingBottom: '5vh',
+                    position: 'relative',
+                    zIndex: 40 // Below pinned container when it arrives
+                }}>
+                    <h2 style={{
+                        fontSize: '4rem',
+                        margin: 0,
+                        textShadow: '0 4px 10px rgba(0,0,0,0.5)'
+                    }}>
+                        {title}
+                    </h2>
+                </div>
+            )}
+
+            {/* 2. Container catches the scroll and PINS itself */}
+            <div ref={containerRef} className={styles.stackContainer} style={{ height: '100vh', width: '100%' }}>
                 {items.map((img, index) => (
                     <div
                         key={img.id}
                         className={styles.stackCard}
                         style={{
-                            zIndex: 100 + index, // Explicitly force stacking order: later items ON TOP
+                            zIndex: 100 + index,
                         }}
                     >
                         <GalleryItem
@@ -103,8 +118,8 @@ const StackGallery: React.FC<Props> = ({ items }) => {
                             displayLabel={img.id.toString().padStart(2, '0')}
                             // @ts-ignore
                             orientation={img.orientation}
-                            zPriority={100 + index} // Pass explicit Z priority to WebGL (though ignored if !useWebGL)
-                            useWebGL={false} // Disable WebGL for stack to avoid rotation mismatch
+                            zPriority={100 + index}
+                            useWebGL={false}
                         />
                     </div>
                 ))}

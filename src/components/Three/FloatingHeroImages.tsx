@@ -60,8 +60,10 @@ const FloatingHeroImages: React.FC = () => {
 
     // Create a stable set of floating items
     const floatingItems = useMemo(() => {
-        // Use first 6 images from the data source
-        const selectedImages = images.slice(0, 6);
+        const isMobile = typeof window !== 'undefined'
+            && window.matchMedia('(max-width: 768px)').matches;
+        const count = isMobile ? 4 : 6;
+        const selectedImages = images.slice(0, count);
 
         return selectedImages.map((img) => {
             // Random spread based on viewport size
@@ -69,7 +71,9 @@ const FloatingHeroImages: React.FC = () => {
             const y = (Math.random() - 0.5) * height * 0.8;
             const z = -200 + Math.random() * 400;
 
-            const scale = 150 + Math.random() * 150;
+            const baseScale = isMobile ? 120 : 150;
+            const scaleVariance = isMobile ? 120 : 150;
+            const scale = baseScale + Math.random() * scaleVariance;
 
             return {
                 id: img.id,

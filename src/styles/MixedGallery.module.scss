@@ -6,6 +6,8 @@
     background: transparent;
     z-index: 10;
     min-height: 100vh;
+    overflow: hidden;
+    /* Added to clip parallax items moving out of bounds */
 }
 
 .columnWrapper {
@@ -51,18 +53,16 @@
 }
 
 /* Stack Section Styles */
+/* Stack Section Styles */
 .stackSection {
-    height: 100vh;
-    height: 100dvh;
-    /* Long scroll area */
     position: relative;
     z-index: 10;
+    /* Height will be handled by content + GSAP Pin Spacer */
 }
 
 .stackContainer {
-    height: 100vh;
-    height: 100dvh;
     width: 100%;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,11 +71,10 @@
 }
 
 .stackCard {
+    /* DEFAULT state for cards 2..N: Absolute, stacked centrally */
     position: absolute;
     height: 65vh;
     width: 43vh;
-    /* 2:3 Ratio approx */
-    /* initial state set by GSAP usually, but center it */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -84,7 +83,8 @@
     align-items: center;
     justify-content: center;
 
-    background: transparent;
+    background-color: #242424;
+    /* Ensure opacity */
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 
@@ -101,10 +101,21 @@
     }
 
     @media (max-width: 768px) {
-        width: 70vw;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        width: 75vw;
+        /* Reduced from 85vw */
         height: auto;
         aspect-ratio: 2/3;
-        top: 55%;
+
+        background-color: #242424;
+        /* Prevents see-through/ghosting */
+
+        margin: 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 }
 
@@ -113,20 +124,17 @@
         flex-direction: column;
         align-items: center;
         gap: 10vh;
-        /* Gap between the two columns stack */
     }
 
     .verticalItem {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
-        /* Remove item margins, rely on flex gap */
     }
 
     .oddColumn,
     .evenColumn {
         width: 90%;
         gap: 10vh;
-        /* Gap between items inside columns */
     }
 
     .oddColumn {

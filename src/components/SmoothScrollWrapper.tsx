@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { setLenisInstance } from '../store/lenisStore';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,32 +12,44 @@ interface Props {
 
 const SmoothScrollWrapper: React.FC<Props> = ({ children }) => {
   useEffect(() => {
-    // Mobile Improvement: Normalize scroll prevents address bar jumps and unifies touch/wheel physics
-    // This is critical for pinned sections on mobile.
-    ScrollTrigger.normalizeScroll(true);
+    // Disabled normalizeScroll to fix mobile lag "stuttering".
+    // While it helps with address bar pinning, it can cause severe scroll jank.
+    // ScrollTrigger.normalizeScroll(true);
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    // Disable Lenis on Mobile to ensure native sticky/fixed behavior works perfectly
+    if (isMobile) {
+      return;
+    }
 
     const lenis = new Lenis({
-      duration: 1.0, // Reduced from 1.2 for snappier feel
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
-      syncTouch: true,
-      touchMultiplier: 0.7, // Reduced from 1.5 to make it slower/heavier on mobile
+      // syncTouch: true, // No need if we disable on mobile
+      // touchMultiplier: 0.7,
     });
+    setLenisInstance(lenis);
 
     // Integrate with GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const onTick = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+
+    gsap.ticker.add(onTick);
 
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      gsap.ticker.remove(onTick);
+      // ScrollTrigger.normalizeScroll(false); 
+      setLenisInstance(null);
       lenis.destroy();
     };
   }, []);

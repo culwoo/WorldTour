@@ -10,11 +10,12 @@ import styles from '../styles/MixedGallery.module.scss';
 
 interface Props {
     items: typeof import('../data/images').images;
+    useWebGL?: boolean;
 }
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ParallaxGallery: React.FC<Props> = ({ items }) => {
+const ParallaxGallery: React.FC<Props> = ({ items, useWebGL = true }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
@@ -73,6 +74,7 @@ const ParallaxGallery: React.FC<Props> = ({ items }) => {
                                 url={img.url}
                                 title={img.title}
                                 displayLabel={img.id.toString().padStart(2, '0')}
+                                useWebGL={useWebGL}
                             />
                         </div>
                     ))}
@@ -87,6 +89,7 @@ const ParallaxGallery: React.FC<Props> = ({ items }) => {
                                     url={img.url}
                                     title={img.title}
                                     displayLabel={img.id.toString().padStart(2, '0')}
+                                    useWebGL={useWebGL}
                                 />
                             </div>
                         );

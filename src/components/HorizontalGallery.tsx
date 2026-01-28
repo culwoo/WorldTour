@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import GalleryItem from './GalleryItem';
 import styles from '../styles/HorizontalGallery.module.scss';
+// import { getLenisInstance } from '../store/lenisStore';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,9 +14,10 @@ interface Props {
     items: typeof import('../data/images').images; // Correctly reference the type of the images array
     title?: string;
     subtitle?: string;
+    useWebGL?: boolean;
 }
 
-const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", subtitle = "Scroll to Explore" }) => {
+const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", subtitle = "Scroll to Explore", useWebGL = true }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -30,9 +32,10 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
             x: () => -(containerRef.current!.scrollWidth - window.innerWidth),
             ease: "none",
             scrollTrigger: {
+                id: "horizontal-gallery-trigger", // Added ID for clamping logic
                 trigger: wrapperRef.current,
                 start: "top top",
-                end: () => `+=${containerRef.current!.scrollWidth}`, // Adjust length slightly
+                end: () => `+=${containerRef.current!.scrollWidth}`,
                 scrub: 1,
                 pin: true,
                 anticipatePin: 1,
@@ -45,24 +48,51 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
     // Handle dynamic image loading causing layout shifts
     React.useEffect(() => {
         const images = containerRef.current?.querySelectorAll('img');
-        if (!images) return;
+        if (!images || images.length === 0) return;
 
-        const handleImageLoad = () => {
-            ScrollTrigger.refresh();
+        let rafId: number | null = null;
+        let pending = images.length;
+
+        const scheduleRefresh = () => {
+            if (rafId !== null) return;
+            rafId = requestAnimationFrame(() => {
+                rafId = null;
+                ScrollTrigger.refresh();
+            });
+        };
+
+        const handleImageDone = () => {
+            pending -= 1;
+            if (pending <= 0) {
+                scheduleRefresh();
+            }
         };
 
         images.forEach(img => {
             if (img.complete) {
-                handleImageLoad();
+                handleImageDone();
             } else {
-                img.addEventListener('load', handleImageLoad);
+                img.addEventListener('load', handleImageDone, { once: true });
+                img.addEventListener('error', handleImageDone, { once: true });
             }
         });
 
+        const safetyTimeout = window.setTimeout(scheduleRefresh, 2000);
+
         return () => {
-            images.forEach(img => img.removeEventListener('load', handleImageLoad));
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+            }
+            window.clearTimeout(safetyTimeout);
+            images.forEach(img => {
+                img.removeEventListener('load', handleImageDone);
+                img.removeEventListener('error', handleImageDone);
+            });
         };
     }, [items]);
+
+    // Mobile horizontal swipe logic REMOVED to prevent scroll locking.
+    // Native vertical scroll will drive the horizontal animation via ScrollTrigger.
 
     return (
         <div ref={wrapperRef} className={styles.scrollWrapper}>
@@ -82,6 +112,7 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
                                 url={img.url}
                                 title={img.title}
                                 displayLabel={img.id.toString().padStart(2, '0')}
+                                useWebGL={useWebGL}
                                 // @ts-ignore
                                 orientation={img.orientation}
                             />

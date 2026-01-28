@@ -8,10 +8,10 @@ import FloatingHeroImages from './FloatingHeroImages';
 import PersistentGeo from './PersistentGeo';
 
 interface SceneProps {
-    ready: boolean;
+    ready?: boolean;
 }
 
-const Scene: React.FC<SceneProps> = ({ ready }) => {
+const Scene: React.FC<SceneProps> = ({ ready = true }) => {
     const items = useGalleryStore((state) => state.items);
 
     return (
@@ -23,6 +23,7 @@ const Scene: React.FC<SceneProps> = ({ ready }) => {
                 pointerEvents: 'none',
             }}
             camera={{ position: [0, 0, 600], fov: 75 }}
+            dpr={[1, 1.5]}
         >
             <PerspectiveCameraHelper />
 
@@ -34,9 +35,9 @@ const Scene: React.FC<SceneProps> = ({ ready }) => {
             </Suspense>
 
             {/* 2. Main Gallery: Independent Suspense layer.
-                Loaded only when 'ready' is true. 
-                Because it's a separate Suspense sibling, its loading state 
-                won't affect the visibility of Hero Images. */}
+                Now we load this IMMEDIATELY behind the splash screen.
+                This allows shaders to compile and textures to upload while the user is waiting,
+                preventing the freeze upon home screen entry. */}
             {ready && (
                 <Suspense fallback={null}>
                     {items.filter(item => item.useWebGL !== false).map((item) => (

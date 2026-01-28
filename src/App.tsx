@@ -13,6 +13,17 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
 
+  // Warm up WebGL assets behind the splash to avoid post-splash hitching.
+  useEffect(() => {
+    const warmupTimer = window.setTimeout(() => {
+      setSceneReady(true);
+    }, 100);
+
+    return () => {
+      window.clearTimeout(warmupTimer);
+    };
+  }, []);
+
   // Force refresh GSAP on mount and load
   useEffect(() => {
     // 1. On window load (all assets loaded)
@@ -21,20 +32,18 @@ function App() {
     };
     window.addEventListener('load', handleLoad);
 
-    // 2. Periodic checks for the first few seconds (fallback for slow images)
-    const interval = setInterval(() => {
+    // 2. Light-weight fallbacks for slow layout shifts
+    const rafId = requestAnimationFrame(() => {
       ScrollTrigger.refresh();
-    }, 1000);
-
-    // Clear interval after 5 seconds
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-    }, 5000);
+    });
+    const safetyTimeout = window.setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 1200);
 
     return () => {
       window.removeEventListener('load', handleLoad);
-      clearInterval(interval);
-      clearTimeout(timeout);
+      cancelAnimationFrame(rafId);
+      window.clearTimeout(safetyTimeout);
     };
   }, []);
 
@@ -42,18 +51,17 @@ function App() {
   useEffect(() => {
     if (!loading) {
       // Small delay to allow DOM to settle after splash removal
-      setTimeout(() => {
+      const refreshA = window.setTimeout(() => {
         ScrollTrigger.refresh();
       }, 100);
-      setTimeout(() => {
+      const refreshB = window.setTimeout(() => {
         ScrollTrigger.refresh();
       }, 500);
 
-      // DELAY loading of heavy gallery assets to prevent initial stutter on home reveal.
-      // Wait for the splash exit animation to fully complete + 1.5s of smooth idle time.
-      setTimeout(() => {
-        setSceneReady(true);
-      }, 2000);
+      return () => {
+        window.clearTimeout(refreshA);
+        window.clearTimeout(refreshB);
+      };
     }
   }, [loading]);
 
@@ -75,7 +83,7 @@ function App() {
       </div>
 
       {/* Scrollable Content */}
-      <div style={{ position: 'relative', zIndex: 10, background: 'transparent' }}>
+      <div style={{ position: 'relative', zIndex: 10, background: 'transparent', minHeight: '100vh', width: '100%' }}>
         <SmoothScrollWrapper>
           <main>
             <header style={{

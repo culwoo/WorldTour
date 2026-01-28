@@ -31,7 +31,7 @@ const PersistentGeo: React.FC = () => {
             tl.to(meshRef.current.position, {
                 x: 4,
                 y: 2,
-                z: -5,
+                z: -400,
                 duration: 2 // relative unit
             });
             tl.to(meshRef.current.scale, {
@@ -50,7 +50,7 @@ const PersistentGeo: React.FC = () => {
             tl.to(meshRef.current.position, {
                 x: 0,
                 y: 0,
-                z: 2,
+                z: -200,
                 duration: 2
             });
             tl.to(meshRef.current.scale, {
@@ -78,7 +78,7 @@ const PersistentGeo: React.FC = () => {
     });
 
     return (
-        <Sphere ref={meshRef} args={[1, 64, 64]} position={[0, 0, 0]} scale={1.5}>
+        <Sphere ref={meshRef} args={[1, 64, 64]} position={[0, 0, -400]} scale={2.5}>
             <MeshDistortMaterial
                 ref={materialRef}
                 color="#ffffff" // White glass feeling?

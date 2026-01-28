@@ -7,6 +7,8 @@
     width: 100%;
     position: relative;
     /* Determine height needed for scroll? No, GSAP Pinned element logic handles spacing. */
+    touch-action: pan-y;
+    overscroll-behavior: contain;
 }
 
 .stickyContainer {
@@ -15,6 +17,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
+    touch-action: pan-y;
 }
 
 .track {

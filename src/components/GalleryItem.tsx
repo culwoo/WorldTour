@@ -19,6 +19,7 @@ const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0, useWebGL 
     const updateHover = useGalleryStore((state) => state.updateHover);
 
     useLayoutEffect(() => {
+        if (!useWebGL) return;
         if (ref.current) {
             registerItem(id, url, ref.current, zPriority, useWebGL);
         }
@@ -32,14 +33,15 @@ const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0, useWebGL 
         <div
             className={styles.galleryItem}
             ref={ref}
-            onMouseEnter={() => updateHover(id, true)}
-            onMouseLeave={() => updateHover(id, false)}
+            onMouseEnter={() => useWebGL && updateHover(id, true)}
+            onMouseLeave={() => useWebGL && updateHover(id, false)}
         >
             <img
                 src={url}
                 alt={title}
                 className={styles.layoutImage}
-                loading="eager" // Load asap to establish layout height
+                loading="lazy"
+                decoding="async"
             />
 
         </div>

@@ -2,10 +2,34 @@ import React, { useMemo } from 'react';
 import HorizontalGallery from './HorizontalGallery';
 import ParallaxGallery from './ParallaxGallery';
 import StackGallery from './StackGallery';
+import StackGalleryMobile from './StackGalleryMobile';
 import Marquee from './Marquee';
 import { images } from '../data/images';
 
 const MixedGallery: React.FC = () => {
+    // Initialize with correct value to avoid flash
+    const [isMobile, setIsMobile] = React.useState(() => {
+        if (typeof window !== 'undefined') {
+            return window.matchMedia('(max-width: 768px)').matches;
+        }
+        return false;
+    });
+
+    React.useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+        };
+
+        // Initial check
+        checkMobile();
+
+        // Listener
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    const useWebGL = !isMobile;
+
     // Split images into 3 chunks of 8
     // Split images based on orientation requests
     const splitImages = useMemo(() => {
@@ -51,27 +75,36 @@ const MixedGallery: React.FC = () => {
     return (
         <div style={{ position: 'relative', zIndex: 10 }}>
             {/* Phase 1: Horizontal Scroll */}
-            <HorizontalGallery items={section1} title="The<br/>Collection" subtitle="Phase I" />
+            <HorizontalGallery items={section1} title="The<br/>Collection" subtitle="Phase I" useWebGL={useWebGL} />
 
             {/* Transition */}
             <Marquee text="LifeOfKwak • " direction="right" speed={20} />
 
             {/* Phase 2: Vertical Parallax */}
-            <div style={{ background: 'transparent' }}>
+            <div style={{ background: 'transparent', paddingBottom: '10vh' }}>
                 <div style={{ padding: '10vh 0', textAlign: 'center' }}>
                     <h2>Phase II</h2>
                 </div>
-                <ParallaxGallery items={section2} />
+                <ParallaxGallery items={section2} useWebGL={useWebGL} />
             </div>
 
             {/* Transition */}
             <Marquee text="LifeOfKwak • " direction="left" speed={20} />
 
+            {/* SPACER to prevent overlap with Phase 2 Parallax elements */}
+            <div style={{ height: '20vh', width: '100%', background: 'transparent' }} />
+
             {/* Phase 3: Stack / Deep Dive */}
-            <div style={{ textAlign: 'center', paddingTop: '10vh', paddingBottom: '5vh' }}>
-                <h2>Phase III</h2>
-            </div>
-            <StackGallery items={section3} />
+            {isMobile ? (
+                <>
+                    <div style={{ textAlign: 'center', paddingTop: '10vh', paddingBottom: '5vh' }}>
+                        <h2>Phase III</h2>
+                    </div>
+                    <StackGalleryMobile items={section3} />
+                </>
+            ) : (
+                <StackGallery items={section3} title="Phase III" />
+            )}
         </div>
     );
 };
