@@ -88,6 +88,7 @@ button:focus-visible {
 }
 
 /* MOBILE FIXES: Force Enable Scroll */
+/* MOBILE FIXES: Force Enable Scroll */
 @media (max-width: 1024px) {
 
   html,
@@ -96,5 +97,19 @@ button:focus-visible {
     overflow-y: scroll !important;
     -webkit-overflow-scrolling: touch !important;
     touch-action: auto !important;
+  }
+
+  /* Kill the Canvas interaction completely on mobile */
+  canvas {
+    pointer-events: none !important;
+    touch-action: auto !important;
+  }
+
+  #root,
+  .app-container {
+    height: auto !important;
+    /* Allow expansion */
+    overflow-x: hidden;
+    overflow-y: visible !important;
   }
 }
