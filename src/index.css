@@ -86,3 +86,15 @@ button:focus-visible {
 .custom-cursor-dot {
   z-index: 0 !important;
 }
+
+/* MOBILE FIXES: Force Enable Scroll */
+@media (max-width: 1024px) {
+
+  html,
+  body {
+    height: auto !important;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: auto !important;
+  }
+}

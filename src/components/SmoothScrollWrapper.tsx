@@ -16,7 +16,12 @@ const SmoothScrollWrapper: React.FC<Props> = ({ children }) => {
     // While it helps with address bar pinning, it can cause severe scroll jank.
     // ScrollTrigger.normalizeScroll(true);
 
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    // Enhanced Mobile Check:
+    // 1. Screen width check (up to 1024px to cover tablets/large phones)
+    // 2. User Agent check for stronger mobile detection
+    const isMobile =
+      window.matchMedia('(max-width: 1024px)').matches ||
+      /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
     // Disable Lenis on Mobile to ensure native sticky/fixed behavior works perfectly
     if (isMobile) {
