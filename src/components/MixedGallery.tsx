@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import HorizontalGallery from './HorizontalGallery';
 import ParallaxGallery from './ParallaxGallery';
-import StackGallery from './StackGallery';
-import StackGalleryMobile from './StackGalleryMobile';
 import Marquee from './Marquee';
 import { images } from '../data/images';
 
@@ -30,8 +28,7 @@ const MixedGallery: React.FC = () => {
 
     const useWebGL = !isMobile;
 
-    // Split images into 3 chunks of 8
-    // Split images based on orientation requests
+    // Split images into 2 chunks (Phase 1 & 2 only)
     const splitImages = useMemo(() => {
         // 1. Separate by orientation
         // @ts-ignore
@@ -54,33 +51,26 @@ const MixedGallery: React.FC = () => {
             return pool;
         };
 
-        // 3. Process Portraits (For Phase 1 & 3)
-        const shuffledPortraits = shuffle(portraits);
-        const halfPoint = Math.ceil(shuffledPortraits.length / 2);
+        // 3. Process Portraits (ALL for Phase 1)
+        const section1 = shuffle(portraits);
 
-        const section1 = shuffledPortraits.slice(0, halfPoint); // Phase 1: Portraits
-        const section3 = shuffledPortraits.slice(halfPoint);    // Phase 3: Portraits
-
-        // 4. Process Landscapes (For Phase 2)
-        // We put ALL landscapes in Phase 2.
-        // Optional: Ensure specific ID 24 logic if desired, but user said "Use strictly landscapes".
-        // Let's just shuffle them to mix them up.
+        // 4. Process Landscapes (ALL for Phase 2)
         const section2 = shuffle(landscapes);
 
-        return { section1, section2, section3 };
+        return { section1, section2 };
     }, []);
 
-    const { section1, section2, section3 } = splitImages;
+    const { section1, section2 } = splitImages;
 
     return (
         <div style={{ position: 'relative', zIndex: 10 }}>
-            {/* Phase 1: Horizontal Scroll */}
+            {/* Phase 1: Horizontal Scroll (All Portraits) */}
             <HorizontalGallery items={section1} title="The<br/>Collection" subtitle="Phase I" useWebGL={useWebGL} />
 
             {/* Transition */}
             <Marquee text="LifeOfKwak • " direction="right" speed={20} />
 
-            {/* Phase 2: Vertical Parallax */}
+            {/* Phase 2: Vertical Parallax (All Landscapes) */}
             <div style={{ background: 'transparent', paddingBottom: '10vh' }}>
                 <div style={{ padding: '10vh 0', textAlign: 'center' }}>
                     <h2>Phase II</h2>
@@ -88,23 +78,7 @@ const MixedGallery: React.FC = () => {
                 <ParallaxGallery items={section2} useWebGL={useWebGL} />
             </div>
 
-            {/* Transition */}
-            <Marquee text="LifeOfKwak • " direction="left" speed={20} />
-
-            {/* SPACER to prevent overlap with Phase 2 Parallax elements */}
-            <div style={{ height: '20vh', width: '100%', background: 'transparent' }} />
-
-            {/* Phase 3: Stack / Deep Dive */}
-            {isMobile ? (
-                <>
-                    <div style={{ textAlign: 'center', paddingTop: '10vh', paddingBottom: '5vh' }}>
-                        <h2>Phase III</h2>
-                    </div>
-                    <StackGalleryMobile items={section3} />
-                </>
-            ) : (
-                <StackGallery items={section3} title="Phase III" />
-            )}
+            {/* No Phase 3 - Removed as per request */}
         </div>
     );
 };
