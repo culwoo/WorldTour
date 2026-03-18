@@ -1,8 +1,8 @@
-import React, { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { Suspense, useMemo } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { useGalleryStore } from '../../store/useGalleryStore';
 import GalleryPlane from './GalleryPlane';
-import { Preload } from '@react-three/drei';
+import { PerspectiveCamera, Preload } from '@react-three/drei';
 
 import FloatingHeroImages from './FloatingHeroImages';
 import PersistentGeo from './PersistentGeo';
@@ -10,6 +10,17 @@ import PersistentGeo from './PersistentGeo';
 interface SceneProps {
     ready?: boolean;
 }
+
+const SceneCamera: React.FC = () => {
+    const { size } = useThree();
+
+    const fov = useMemo(() => {
+        const dist = 600;
+        return 2 * Math.atan((size.height / 2) / dist) * (180 / Math.PI);
+    }, [size.height]);
+
+    return <PerspectiveCamera makeDefault position={[0, 0, 600]} fov={fov} />;
+};
 
 const Scene: React.FC<SceneProps> = ({ ready = true }) => {
     const items = useGalleryStore((state) => state.items);
@@ -21,11 +32,14 @@ const Scene: React.FC<SceneProps> = ({ ready = true }) => {
                 width: '100%',
                 height: '100%',
                 pointerEvents: 'none',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                touchAction: 'none'
             }}
-            camera={{ position: [0, 0, 600], fov: 75 }}
             dpr={[1, 1.5]}
         >
-            <PerspectiveCameraHelper />
+            <SceneCamera />
 
             {/* 1. Hero Images: Independent Suspense layer. 
                 These are preloaded in Splash, so they should appear instantly. */}
@@ -50,32 +64,5 @@ const Scene: React.FC<SceneProps> = ({ ready = true }) => {
         </Canvas>
     );
 };
-
-// Helper to set exact 1:1 pixel match
-import { useThree } from '@react-three/fiber';
-import { useEffect } from 'react';
-
-const PerspectiveCameraHelper = () => {
-    const { camera, size } = useThree();
-
-    useEffect(() => {
-        const dist = 600;
-        const height = size.height;
-        // Calculate FOV
-        // tan(fov/2 * PI/180) = (height/2) / dist
-        // fov/2 * PI/180 = atan(height/2/dist)
-        // fov = 2 * atan(height/2/dist) * 180 / PI
-
-        if (camera instanceof THREE.PerspectiveCamera) {
-            camera.fov = 2 * Math.atan((height / 2) / dist) * (180 / Math.PI);
-            camera.position.z = dist;
-            camera.updateProjectionMatrix();
-        }
-    }, [size, camera]);
-
-    return null;
-}
-
-import * as THREE from 'three';
 
 export default Scene;

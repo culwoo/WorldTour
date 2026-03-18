@@ -1,50 +1,61 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './CustomCursor.scss';
 
+const detectDesktopCandidate = () => {
+    if (typeof window === 'undefined') return false;
+
+    const ua = navigator.userAgent;
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    const isWideScreen = window.innerWidth > 1024;
+
+    return isWideScreen && !isMobileUA;
+};
+
 const CustomCursor: React.FC = () => {
     const cursorRef = useRef<HTMLDivElement>(null);
     const [hovered, setHovered] = useState(false);
-    const [isDesktop, setIsDesktop] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(detectDesktopCandidate);
     const [hasMoved, setHasMoved] = useState(false);
-    const isDesktopCandidate = useRef(false);
+    const isDesktopCandidate = useRef(isDesktop);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const ua = navigator.userAgent;
-            const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-            const isWideScreen = window.innerWidth > 1024;
+        if (typeof window === 'undefined') return;
 
-            // Candidate checks: Must be wide screen and not a known mobile UA.
-            if (isWideScreen && !isMobileUA) {
-                isDesktopCandidate.current = true;
-                // Enable by default if candidate
+        isDesktopCandidate.current = detectDesktopCandidate();
+
+        // Hybrid Handling:
+        // 1. If touch happens, disable cursor (user is using touchscreen)
+        const handleTouch = () => {
+            setIsDesktop(false);
+            document.body.classList.remove('desktop-cursor-enabled');
+        };
+
+        // 2. If mouse moves, and we are a desktop candidate, re-enable cursor
+        const handleMouseMoveGlobal = () => {
+            if (isDesktopCandidate.current) {
                 setIsDesktop(true);
+                document.body.classList.add('desktop-cursor-enabled');
             }
+        };
 
-            // Hybrid Handling:
-            // 1. If touch happens, disable cursor (user is using touchscreen)
-            const handleTouch = () => {
+        // 3. Keep candidate in sync when viewport changes
+        const handleResize = () => {
+            const desktopCandidate = detectDesktopCandidate();
+            isDesktopCandidate.current = desktopCandidate;
+            if (!desktopCandidate) {
                 setIsDesktop(false);
-                document.body.classList.remove('desktop-cursor-enabled');
-            };
+            }
+        };
 
-            // 2. If mouse moves, and we are a desktop candidate, re-enable cursor
-            const handleMouseMoveGlobal = () => {
-                if (isDesktopCandidate.current) {
-                    setIsDesktop(true);
-                    document.body.classList.add('desktop-cursor-enabled');
-                }
-            };
+        window.addEventListener('touchstart', handleTouch);
+        window.addEventListener('mousemove', handleMouseMoveGlobal);
+        window.addEventListener('resize', handleResize);
 
-            // We use global listeners for toggling capability
-            window.addEventListener('touchstart', handleTouch);
-            window.addEventListener('mousemove', handleMouseMoveGlobal);
-
-            return () => {
-                window.removeEventListener('touchstart', handleTouch);
-                window.removeEventListener('mousemove', handleMouseMoveGlobal);
-            };
-        }
+        return () => {
+            window.removeEventListener('touchstart', handleTouch);
+            window.removeEventListener('mousemove', handleMouseMoveGlobal);
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
     useEffect(() => {

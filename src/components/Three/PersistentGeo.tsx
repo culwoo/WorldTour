@@ -7,9 +7,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+type DistortMaterial = THREE.Material & { distort: number };
+
+const hasDistort = (material: THREE.Material): material is DistortMaterial =>
+    'distort' in material;
+
 const PersistentGeo: React.FC = () => {
     const meshRef = useRef<THREE.Mesh>(null);
-    const materialRef = useRef<any>(null);
 
     useLayoutEffect(() => {
         // We need to wait for DOM to be ready? It usually is by mount.
@@ -72,15 +76,15 @@ const PersistentGeo: React.FC = () => {
         meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
 
         // Distort animation
-        if (materialRef.current) {
-            materialRef.current.distort = 0.4 + Math.sin(state.clock.getElapsedTime()) * 0.1;
+        const material = meshRef.current.material;
+        if (!Array.isArray(material) && hasDistort(material)) {
+            material.distort = 0.4 + Math.sin(state.clock.getElapsedTime()) * 0.1;
         }
     });
 
     return (
         <Sphere ref={meshRef} args={[1, 64, 64]} position={[0, 0, -400]} scale={2.5}>
             <MeshDistortMaterial
-                ref={materialRef}
                 color="#ffffff" // White glass feeling?
                 attach="material"
                 distort={0.4}

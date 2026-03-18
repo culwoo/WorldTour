@@ -31,9 +31,7 @@ const MixedGallery: React.FC = () => {
     // Split images into 2 chunks (Phase 1 & 2 only)
     const splitImages = useMemo(() => {
         // 1. Separate by orientation
-        // @ts-ignore
         const portraits = images.filter(img => img.orientation === 'portrait');
-        // @ts-ignore
         const landscapes = images.filter(img => img.orientation !== 'portrait');
 
         // 2. Shuffle utilities
@@ -42,7 +40,7 @@ const MixedGallery: React.FC = () => {
             const x = Math.sin(seed++) * 10000;
             return x - Math.floor(x);
         };
-        const shuffle = (array: any[]) => {
+        const shuffle = <T,>(array: T[]) => {
             const pool = [...array];
             for (let i = pool.length - 1; i > 0; i--) {
                 const j = Math.floor(random() * (i + 1));
@@ -71,7 +69,7 @@ const MixedGallery: React.FC = () => {
             <Marquee text="LifeOfKwak • " direction="right" speed={20} />
 
             {/* Phase 2: Vertical Parallax (All Landscapes) */}
-            <div style={{ background: 'transparent', paddingBottom: '10vh' }}>
+            <div style={{ background: 'transparent' }}>
                 <div style={{ padding: '10vh 0', textAlign: 'center' }}>
                     <h2>Phase II</h2>
                 </div>

@@ -1,0 +1,331 @@
+@import './variables';
+
+/* ─── Keyframes ─── */
+@keyframes noise {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  30% { transform: translate(3%, -15%); }
+  50% { transform: translate(-10%, 5%); }
+  70% { transform: translate(8%, -5%); }
+  90% { transform: translate(-3%, 10%); }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent); }
+  50% { box-shadow: 0 0 8px 2px var(--accent); }
+}
+
+/* ─── Container: single viewport, no scroll ─── */
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: $bg-color;
+  color: $text-color;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Background effects ─── */
+.gradientOrb {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 163, 90, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.noiseOverlay {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+  animation: noise 8s steps(10) infinite;
+}
+
+/* ─── Floating preview image ─── */
+.floatingPreview {
+  position: fixed;
+  width: 280px;
+  height: 370px;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  overflow: hidden;
+  border-radius: 8px;
+  will-change: transform;
+
+  &.visible {
+    opacity: 0.7;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* ─── Navigation ─── */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+  position: relative;
+  z-index: 10;
+}
+
+.navItem {
+  font-family: $font-family-sans;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.brand {
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.navRight {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.location {
+  font-weight: 300;
+  opacity: 0.35;
+}
+
+.time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 300;
+  opacity: 0.5;
+}
+
+/* ─── Main center content ─── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  padding: 0 2rem;
+}
+
+.title {
+  font-family: 'Space Grotesk', $font-family-sans;
+  font-size: clamp(2.8rem, 8vw, 8rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  perspective: 1000px;
+
+  .char {
+    will-change: transform, opacity;
+  }
+}
+
+.subtitle {
+  font-family: $font-family-sans;
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.35;
+  margin-top: 1.2rem;
+}
+
+.divider {
+  width: 50px;
+  height: 1px;
+  background: rgba($text-color, 0.15);
+  margin: 2rem 0;
+  transform-origin: center;
+}
+
+/* ─── Project navigation ─── */
+.projectNav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 520px;
+}
+
+// Dim non-hovered items when any item is hovered
+.projectNav.hasHover .projectLink:not(.active) .projectIndex,
+.projectNav.hasHover .projectLink:not(.active) .projectTitle,
+.projectNav.hasHover .projectLink:not(.active) .projectMeta {
+  opacity: 0.15;
+}
+
+.projectLink {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  transition: opacity 0.35s ease, background 0.35s ease;
+  cursor: default;
+  user-select: none;
+
+  &.live {
+    cursor: pointer;
+
+    &:hover {
+      background: rgba($text-color, 0.03);
+    }
+  }
+
+  &.active {
+    .projectIndex {
+      color: var(--accent);
+      opacity: 0.8;
+    }
+
+    .projectTitle {
+      color: var(--accent);
+    }
+
+    .dot {
+      background: var(--accent);
+    }
+  }
+
+  &.soon {
+    .projectIndex,
+    .projectTitle,
+    .projectMeta {
+      opacity: 0.3;
+    }
+  }
+}
+
+.projectIndex {
+  font-family: 'Space Grotesk', $font-family-sans;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.2;
+  transition: color 0.35s ease, opacity 0.35s ease;
+  width: 1.8rem;
+  flex-shrink: 0;
+}
+
+.projectTitle {
+  font-family: 'Space Grotesk', $font-family-sans;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: color 0.35s ease;
+  flex: 1;
+}
+
+.projectMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: $font-family-sans;
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.35;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+  transition: background 0.35s ease;
+}
+
+/* ─── Footer ─── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+  position: relative;
+  z-index: 10;
+}
+
+.footerItem {
+  font-family: $font-family-sans;
+  font-size: 0.65rem;
+  font-weight: 300;
+  opacity: 0.2;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 768px) {
+  .nav {
+    padding: 1.5rem 1.5rem;
+  }
+
+  .location {
+    display: none;
+  }
+
+  .title {
+    font-size: clamp(2.2rem, 12vw, 4rem);
+  }
+
+  .subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+  }
+
+  .divider {
+    margin: 1.5rem 0;
+  }
+
+  .projectNav {
+    max-width: 100%;
+  }
+
+  .projectLink {
+    gap: 1rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .projectTitle {
+    font-size: 1.05rem;
+  }
+
+  .projectMeta span:not(.dot) {
+    display: none;
+  }
+
+  .footer {
+    padding: 1.5rem 1.5rem;
+  }
+
+  .footerItem:last-child {
+    display: none;
+  }
+
+  .gradientOrb,
+  .floatingPreview {
+    display: none;
+  }
+}

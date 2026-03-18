@@ -1,12 +1,13 @@
 import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Observer } from 'gsap/all';
 import { useGSAP } from '@gsap/react';
 import GalleryItem from './GalleryItem';
 import styles from '../styles/HorizontalGallery.module.scss';
 // import { getLenisInstance } from '../store/lenisStore';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Observer);
 
 
 
@@ -24,8 +25,9 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
     useGSAP(() => {
         if (!containerRef.current || !wrapperRef.current) return;
 
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
-        if (isMobile) return; // Disable GSAP scrolljacking on mobile
+        // ENABLED for mobile as well now.
+        // const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        // if (isMobile) return; 
 
         // Horizontal Scroll
         gsap.to(containerRef.current, {
@@ -40,6 +42,49 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
                 pin: true,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
+            }
+        });
+
+        // Horizontal Swipe Helper for Mobile
+        // Maps horizontal swipe gestures to vertical scroll, 
+        // effectively driving the pinned scroll animation.
+        Observer.create({
+            target: wrapperRef.current,
+            type: "touch,pointer",
+            onChangeX: (self) => {
+                const st = ScrollTrigger.getById("horizontal-gallery-trigger");
+                if (!st) return;
+
+                // INVERTED Direction based on user feedback.
+                // Finger Left (deltaX > 0) -> formerly caused scroll down. User said "Opposite".
+                // So now Finger Left -> Scroll Up.
+                // Wait... "Right to Left swipe (Finger Left) -> Images Right to Left".
+                // Images R-to-L means we are ADVANCING (Scrolling Down).
+                // So Finger Left should Scroll Down.
+                // User said: "It moves opposite".
+                // Implying currently Finger Left -> Scrolls Up?
+                // I will use -1 * deltaX to flip whatever it was.
+
+                // ADJUSTED: 
+                // Previous: window.scrollBy(0, self.deltaX * sensitivity);
+                // New: window.scrollBy(0, -self.deltaX * sensitivity);
+                const sensitivity = 2.5;
+                const moveY = -self.deltaX * sensitivity;
+
+                // BOUNDARY CHECK
+                // Prevent horizontal swipe from exiting the phase.
+                // User requirement: "Awkward to use horiz swipe to scroll vertically at edges".
+
+                // Check if we are at limits
+                const p = st.progress;
+
+                // If attempting to go BACK (moveY < 0) and we are near start (p <= 0.001) -> BLOCK.
+                if (moveY < 0 && p <= 0.001) return;
+
+                // If attempting to go FWD (moveY > 0) and we are near end (p >= 0.999) -> BLOCK.
+                if (moveY > 0 && p >= 0.999) return;
+
+                window.scrollBy(0, moveY);
             }
         });
 
@@ -105,7 +150,7 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
                         <p>{subtitle}</p>
                     </div>
 
-                    {items.map((img) => (
+                    {items.map((img, index) => (
                         <div key={img.id} className={styles.itemWrapper}>
                             <GalleryItem
                                 id={img.id}
@@ -113,8 +158,7 @@ const HorizontalGallery: React.FC<Props> = ({ items, title = "The Collection", s
                                 title={img.title}
                                 displayLabel={img.id.toString().padStart(2, '0')}
                                 useWebGL={useWebGL}
-                                // @ts-ignore
-                                orientation={img.orientation}
+                                priority={index < 4}
                             />
                         </div>
                     ))}

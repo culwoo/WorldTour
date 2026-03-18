@@ -8,6 +8,11 @@
     min-height: 100vh;
     overflow: hidden;
     /* Added to clip parallax items moving out of bounds */
+
+    @media (max-width: 768px) {
+        padding: 10vh 5vw 0vh 5vw;
+        min-height: auto;
+    }
 }
 
 .columnWrapper {
@@ -139,5 +144,10 @@
 
     .oddColumn {
         margin-bottom: 0;
+    }
+
+    .parallaxSection {
+        padding-bottom: 5vh;
+        /* Small breather before footer */
     }
 }

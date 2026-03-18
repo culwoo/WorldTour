@@ -10,9 +10,10 @@ interface Props {
     displayLabel: string;
     zPriority?: number;
     useWebGL?: boolean;
+    priority?: boolean;
 }
 
-const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0, useWebGL = true }) => {
+const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0, useWebGL = true, priority = false }) => {
     const ref = useRef<HTMLDivElement>(null);
     const registerItem = useGalleryStore((state) => state.registerItem);
     const unregisterItem = useGalleryStore((state) => state.unregisterItem);
@@ -40,8 +41,9 @@ const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0, useWebGL 
                 src={url}
                 alt={title}
                 className={styles.layoutImage}
-                loading="lazy"
-                decoding="async"
+                loading={priority ? "eager" : "lazy"}
+                fetchPriority={priority ? "high" : "auto"}
+                decoding={priority ? "sync" : "async"}
             />
 
         </div>

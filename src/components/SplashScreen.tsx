@@ -16,9 +16,11 @@ const SplashScreen: React.FC<Props> = ({ onComplete }) => {
     // We keep a 'display' progress to animate smoothly to the real 'progress'
     const progressRef = useRef({ val: 0 });
 
-    // Preload all gallery textures during splash to avoid a post-splash hitch.
+    // Preload ONLY the first 6 images to speed up initial load.
+    // The rest will be loaded lazily as the user scrolls.
     useEffect(() => {
-        images.forEach((img) => {
+        const preloadList = images.slice(0, 6);
+        preloadList.forEach((img) => {
             useTexture.preload(img.url);
         });
     }, []);
