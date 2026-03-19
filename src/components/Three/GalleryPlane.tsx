@@ -130,7 +130,9 @@ const GalleryPlane: React.FC<Props> = ({ item }) => {
 
                 targetOffsetX = THREE.MathUtils.lerp(normalPullX, blackholePullX, grav);
                 targetOffsetY = THREE.MathUtils.lerp(normalPullY, blackholePullY, grav);
-                targetOffsetZ = THREE.MathUtils.lerp(0, 150 + dist * 0.1, grav) * smoothPull;
+                // Each plane gets a unique z-layer (card stack) to prevent z-fighting
+                const uniqueZLayer = item.id * 2;
+                targetOffsetZ = THREE.MathUtils.lerp(0, 150 + uniqueZLayer, grav) * smoothPull;
 
                 // Tilt Physics
                 if (dist < hoverRadius || grav > 0) {
@@ -178,9 +180,9 @@ const GalleryPlane: React.FC<Props> = ({ item }) => {
     });
 
     return (
-        <mesh ref={meshRef}>
+        <mesh ref={meshRef} renderOrder={item.id}>
             <planeGeometry args={[1, 1]} />
-            <meshBasicMaterial map={texture} transparent />
+            <meshBasicMaterial map={texture} transparent depthWrite={false} />
         </mesh>
     );
 };
