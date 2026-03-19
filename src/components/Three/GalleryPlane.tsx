@@ -39,10 +39,14 @@ const initPointerListener = () => {
         }
     };
 
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('pointerdown', onPointerDown, { passive: true });
-    window.addEventListener('pointerup', cancelPointer, { passive: true });
-    window.addEventListener('pointercancel', cancelPointer, { passive: true });
+    window.addEventListener('pointermove', onPointerMove, { passive: true, capture: true });
+    window.addEventListener('pointerdown', onPointerDown, { passive: true, capture: true });
+    window.addEventListener('pointerup', cancelPointer, { passive: true, capture: true });
+    window.addEventListener('pointercancel', cancelPointer, { passive: true, capture: true });
+    
+    // Fallbacks
+    window.addEventListener('mousedown', onPointerDown as any, { passive: true, capture: true });
+    window.addEventListener('mouseup', cancelPointer, { passive: true, capture: true });
     
     pointerListenerAttached = true;
 };

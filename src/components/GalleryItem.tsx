@@ -41,7 +41,8 @@ const GalleryItem: React.FC<Props> = ({ id, url, title, zPriority = 0, useWebGL 
                 src={url}
                 alt={title}
                 className={styles.layoutImage}
-                style={{ opacity: useWebGL ? 0 : 1 }}
+                style={{ opacity: useWebGL ? 0 : 1, userSelect: 'none', pointerEvents: 'none' }}
+                draggable={false}
                 loading={priority ? "eager" : "lazy"}
                 fetchPriority={priority ? "high" : "auto"}
                 decoding={priority ? "sync" : "async"}
