@@ -1,0 +1,61 @@
+// Hide native cursor on desktop
+body.desktop-cursor-enabled {
+    cursor: none !important;
+
+    *,
+    a,
+    button,
+    [data-hover-trigger] {
+        cursor: none !important;
+    }
+}
+
+.custom-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    margin-top: -7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    pointer-events: none;
+    z-index: 99999;
+    will-change: transform;
+    transition:
+        width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        height 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        margin-left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        margin-top 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        background 0.35s ease,
+        box-shadow 0.4s ease,
+        opacity 0.3s ease;
+    mix-blend-mode: difference;
+
+    // --- Hover State ---
+    &.hovered {
+        width: 22px;
+        height: 22px;
+        margin-left: -11px;
+        margin-top: -11px;
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    // --- Long Press (Blackhole) State ---
+    &.blackhole {
+        width: 60px;
+        height: 60px;
+        margin-left: -30px;
+        margin-top: -30px;
+        background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0) 30%,
+            rgba(255, 255, 255, 0.25) 60%,
+            rgba(255, 255, 255, 0.5) 100%
+        );
+        box-shadow:
+            0 0 30px rgba(255, 255, 255, 0.15),
+            0 0 60px rgba(255, 255, 255, 0.05);
+    }
+}
