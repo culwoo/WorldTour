@@ -22,16 +22,33 @@
 html {
   width: 100%;
   height: auto;
-  overflow-y: scroll;
-  /* Use scroll instead of auto to prevent layout shift */
+  overflow-y: auto;
+  /* Auto works fine now since we killed the scrollbar dimensions (width:0) completely */
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
 }
 
+html, body, * {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
+}
+
 ::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+}
+
+::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+::-webkit-scrollbar-track {
+  display: none !important;
 }
 
 body {
