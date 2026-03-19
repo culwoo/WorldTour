@@ -8,7 +8,7 @@ import Scene from '../components/Three/Scene';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Marquee from '../components/Marquee';
 import SplashScreen from '../components/SplashScreen';
-import CustomCursor from '../components/CustomCursor';
+
 
 function WorldTour() {
   const [loading, setLoading] = useState(true);
@@ -103,7 +103,7 @@ function WorldTour() {
 
   return (
     <div className="app-container">
-      <CustomCursor />
+
       {loading && <SplashScreen onComplete={() => setLoading(false)} />}
 
       {/* WebGL Overlay */}
