@@ -105,10 +105,7 @@ button:focus-visible {
   }
 }
 
-/* Force Custom Cursor/Dot to low Z-Index */
-.custom-cursor-dot {
-  z-index: 0 !important;
-}
+/* Custom cursor z-index handled in CustomCursor.scss */
 
 /* MOBILE FIXES: Force Enable Scroll */
 @media (max-width: 1024px) {
