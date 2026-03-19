@@ -31,6 +31,7 @@ interface Props {
 
 const GalleryPlane: React.FC<Props> = ({ item }) => {
     const meshRef = useRef<THREE.Mesh>(null);
+    const offsetRef = useRef({ x: 0, y: 0, z: 0, rotX: 0, rotY: 0 });
     const { size } = useThree();
 
     // Initialize global pointer listener on mount
@@ -45,20 +46,18 @@ const GalleryPlane: React.FC<Props> = ({ item }) => {
 
         const { width, height, top, left } = item.ref.getBoundingClientRect();
 
-        // 1. Base Positions from scroll
+        // 1. Precise DOM scroll sync (no lerping this!)
         const baseX = left - size.width / 2 + width / 2;
         const baseY = -top + size.height / 2 - height / 2;
+        const baseZ = (item.zIndex || item.id * 0.001) * 0.1;
 
-        const zPriority = item.zIndex || item.id * 0.001;
-        const baseZ = zPriority * 0.1;
-
-        let targetX = baseX;
-        let targetY = baseY;
-        let targetZ = baseZ;
+        let targetOffsetX = 0;
+        let targetOffsetY = 0;
+        let targetOffsetZ = 0;
         let targetRotX = 0;
         let targetRotY = 0;
 
-        // 2. Hover Physics (Magnetic Parallax)
+        // 2. Hover Physics (Magnetic Parallax via offsets)
         if (isHoverPhysicsEnabled) {
             const screenCenterX = left + width / 2;
             const screenCenterY = top + height / 2;
@@ -69,52 +68,53 @@ const GalleryPlane: React.FC<Props> = ({ item }) => {
 
             // Calculate Radiuses
             const maxDimension = Math.max(width, height);
-            const hoverRadius = maxDimension * 0.7; 
-            const magneticRadius = maxDimension * 1.5;
+            const hoverRadius = maxDimension * 0.6; 
+            const magneticRadius = maxDimension * 1.2;
 
             if (dist < magneticRadius) {
                 // A. Magnetic Pull
                 const pullPower = 1 - Math.min(dist / magneticRadius, 1);
                 const smoothPull = Math.pow(pullPower, 2); 
                 
-                const maxPullX = width * 0.1;
-                const maxPullY = height * 0.1;
+                const maxPullX = width * 0.04;
+                const maxPullY = height * 0.04;
                 
-                targetX += (dx / magneticRadius) * maxPullX * smoothPull;
-                targetY -= (dy / magneticRadius) * maxPullY * smoothPull; // Invert dy for WebGL Y
+                targetOffsetX = (dx / magneticRadius) * maxPullX * smoothPull;
+                targetOffsetY = -(dy / magneticRadius) * maxPullY * smoothPull;
 
                 // B. Hover Tilt & Depth
                 if (dist < hoverRadius) {
                     const tiltPower = 1 - Math.min(dist / hoverRadius, 1);
                     const smoothTilt = Math.pow(tiltPower, 1.5);
                     
-                    const maxRotX = Math.PI / 10; // ~18 degrees max
-                    const maxRotY = Math.PI / 10;
+                    const maxRotX = Math.PI / 25; // Much softer, minimal rotation setup
+                    const maxRotY = Math.PI / 25;
 
-                    // Calculate rotation based on local normalized pos (-1 to 1) 
-                    // Use hoverRadius as the denominator to make transition smooth
                     targetRotY = (dx / hoverRadius) * maxRotY * smoothTilt; 
                     targetRotX = (dy / hoverRadius) * maxRotX * smoothTilt;
 
                     // Depth pop-out
-                    targetZ += 40 * smoothTilt;
+                    targetOffsetZ = 25 * smoothTilt;
                 }
             }
         }
 
-        // 3. Apply Smooth Interpolation (Lerp)
-        // Adjust lerp speed by delta so it's frame-rate independent
-        const lerpFactorPos = 1 - Math.pow(0.001, delta); 
-        const lerpFactorRot = 1 - Math.pow(0.0001, delta); // Slightly slower rotation for weight
+        // 3. Interpolate ONLY the offsets
+        const lerpFactorPos = Math.min(1, 1 - Math.pow(0.001, delta)); 
+        const lerpFactorRot = Math.min(1, 1 - Math.pow(0.0001, delta)); 
 
-        meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, lerpFactorPos);
-        meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, lerpFactorPos);
-        meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, targetZ, lerpFactorPos);
+        const offsets = offsetRef.current;
+        offsets.x = THREE.MathUtils.lerp(offsets.x, targetOffsetX, lerpFactorPos);
+        offsets.y = THREE.MathUtils.lerp(offsets.y, targetOffsetY, lerpFactorPos);
+        offsets.z = THREE.MathUtils.lerp(offsets.z, targetOffsetZ, lerpFactorPos);
+        offsets.rotX = THREE.MathUtils.lerp(offsets.rotX, targetRotX, lerpFactorRot);
+        offsets.rotY = THREE.MathUtils.lerp(offsets.rotY, targetRotY, lerpFactorRot);
 
-        meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, targetRotX, lerpFactorRot);
-        meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, targetRotY, lerpFactorRot);
+        // 4. Combine perfect DOM sync with smooth physics offsets
+        meshRef.current.position.set(baseX + offsets.x, baseY + offsets.y, baseZ + offsets.z);
+        meshRef.current.rotation.set(offsets.rotX, offsets.rotY, 0);
 
-        // 4. Update Scale to match DOM exactly
+        // 5. Update Scale to match DOM exactly
         meshRef.current.scale.set(width, height, 1);
     });
 
