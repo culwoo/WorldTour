@@ -1,0 +1,98 @@
+@import './variables';
+
+/*
+ * Interactive grid background.
+ *
+ * `.base`  — faint, softly blurred grid, always visible.
+ * `.lens`  — crisp copy of the same grid, clipped to a soft circle that
+ *            follows the cursor, so the grid reads "sharp" near the mouse and
+ *            "blurry" everywhere else. The lens grid is kept pixel-aligned with
+ *            the base grid via a compensating background-position.
+ *
+ * All motion is driven by CSS variables set from JS:
+ *   --mx / --my  cursor position (px, smoothed)
+ *   --wx / --wy  parallax offset  (px)
+ *   --reveal     0 = hidden, 1 = visible (cursor on screen)
+ */
+
+.grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: layout paint;
+
+  --mx: 50vw;
+  --my: 50vh;
+  --wx: 0px;
+  --wy: 0px;
+  --reveal: 0;
+
+  --cell: 56px;
+  --half: 230px; // half of the lens size below
+  --line-base: rgba(240, 240, 240, 0.05);
+  --line-sharp: rgba(240, 240, 240, 0.14);
+}
+
+/* ─── Faint blurred base grid ─── */
+.base {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--line-base) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line-base) 1px, transparent 1px);
+  background-size: var(--cell) var(--cell);
+  background-position: var(--wx) var(--wy);
+  opacity: 0.55;
+  filter: blur(1.5px);
+}
+
+/* ─── Crisp lens that tracks the cursor ─── */
+.lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 460px;
+  height: 460px;
+  background-image:
+    linear-gradient(to right, var(--line-sharp) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line-sharp) 1px, transparent 1px);
+  background-size: var(--cell) var(--cell);
+  // keep the lens grid aligned with the base grid while the element is moved
+  background-position:
+    calc(var(--wx) - var(--mx) + var(--half))
+    calc(var(--wy) - var(--my) + var(--half));
+  transform: translate3d(
+    calc(var(--mx) - var(--half)),
+    calc(var(--my) - var(--half)),
+    0
+  );
+  opacity: var(--reveal);
+  transition: opacity 0.5s ease;
+  will-change: transform;
+
+  // soft circular reveal, centred in the lens
+  --mask: radial-gradient(
+    circle var(--half) at 50% 50%,
+    #000 0%,
+    #000 20%,
+    rgba(0, 0, 0, 0.15) 52%,
+    transparent 72%
+  );
+  -webkit-mask-image: var(--mask);
+  mask-image: var(--mask);
+}
+
+/* ─── Disable on small / touch screens ─── */
+@media (max-width: 768px), (hover: none) {
+  .grid {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lens {
+    display: none;
+  }
+}

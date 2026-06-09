@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import GridBackground from '../components/GridBackground';
 import styles from '../styles/Home.module.scss';
 
 gsap.registerPlugin(useGSAP);
@@ -148,6 +149,7 @@ const Home = () => {
   return (
     <div ref={containerRef} className={styles.container}>
       {/* Background effects */}
+      <GridBackground />
       <div ref={orbRef} className={styles.gradientOrb} />
       <div className={styles.noiseOverlay} />
 
