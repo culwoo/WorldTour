@@ -36,6 +36,11 @@ const Scene: React.FC<SceneProps> = ({ ready = true }) => {
 
     return (
         <Canvas
+            // `flat` = NoToneMapping. Without it, R3F applies ACES Filmic tone
+            // mapping which darkens/desaturates the photos vs the true original
+            // (the DOM lightbox bypasses it, which is why click looked correct).
+            // flat makes the WebGL gallery render the photo's exact source colors.
+            flat
             gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
             style={{
                 width: '100%',
