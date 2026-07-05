@@ -29,11 +29,12 @@ const projects: Project[] = [
   },
   {
     id: 2,
-    title: 'Film Journal',
-    status: 'coming-soon',
-    path: '#',
-    category: 'Documentation',
+    title: 'Orbit',
+    status: 'live',
+    path: '/orbit',
+    category: 'Revolving Archive',
     accent: '#5a8ec4',
+    preview: '/images/IMG_6613.webp',
   },
   {
     id: 3,

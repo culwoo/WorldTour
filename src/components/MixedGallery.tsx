@@ -5,28 +5,11 @@ import Marquee from './Marquee';
 import { images } from '../data/images';
 
 const MixedGallery: React.FC = () => {
-    // Initialize with correct value to avoid flash
-    const [isMobile, setIsMobile] = React.useState(() => {
-        if (typeof window !== 'undefined') {
-            return window.matchMedia('(max-width: 768px)').matches;
-        }
-        return false;
-    });
-
-    React.useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.matchMedia('(max-width: 768px)').matches);
-        };
-
-        // Initial check
-        checkMobile();
-
-        // Listener
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    const useWebGL = !isMobile;
+    // WebGL gallery is now enabled on every device — the plane material is a
+    // cheap unlit shader on 1024px thumbnails, and the canvas DPR is clamped
+    // low on mobile (see Scene), so the scroll-warp + click-expand work
+    // everywhere without the old jank.
+    const useWebGL = true;
 
     // Split images into 2 chunks (Phase 1 & 2 only)
     const splitImages = useMemo(() => {

@@ -1,0 +1,197 @@
+@use './variables' as *;
+
+// Orbit — light "studio" chapter. Deliberately inverts the site's dark
+// palette: a warm white void that lets the photographs carry all the color.
+$orbit-bg: #f5f4f1;
+$orbit-ink: #1c1b19;
+$orbit-muted: #8f8c86;
+$orbit-line: rgba(28, 27, 25, 0.16);
+$orbit-line-strong: rgba(28, 27, 25, 0.4);
+
+.container {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden;
+    background: $orbit-bg;
+    color: $orbit-ink;
+    font-family: $font-family-sans;
+}
+
+.loader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: $orbit-bg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: opacity 0.7s ease;
+
+    &Hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.loaderCount {
+    font-family: $font-family-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    color: $orbit-ink;
+    font-variant-numeric: tabular-nums;
+}
+
+.loaderBar {
+    width: 160px;
+    height: 1px;
+    background: $orbit-line;
+    overflow: hidden;
+
+    span {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: $orbit-ink;
+        transform-origin: left center;
+        transition: transform 0.3s ease;
+    }
+}
+
+.backButton {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    z-index: 100;
+    background: none;
+    border: 1px solid $orbit-line;
+    color: $orbit-ink;
+    padding: 0.6rem 1.2rem;
+    font-family: $font-family-sans;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    border-radius: 4px;
+    transition: border-color $transition-fast, background $transition-fast;
+
+    &:hover {
+        border-color: $orbit-line-strong;
+        background: rgba(28, 27, 25, 0.04);
+    }
+}
+
+.heading {
+    position: fixed;
+    top: 2.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 90;
+    text-align: center;
+    pointer-events: none;
+
+    h1 {
+        font-family: $font-family-serif;
+        font-size: 1.4rem;
+        letter-spacing: 0.08em;
+        font-weight: 400;
+        margin: 0;
+        color: $orbit-ink;
+        opacity: 0.92;
+    }
+
+    span {
+        display: block;
+        font-size: 0.65rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: $orbit-muted;
+        margin-top: 0.35rem;
+    }
+}
+
+.hint {
+    position: fixed;
+    bottom: 2.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 90;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $orbit-muted;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+}
+
+.hintHidden {
+    opacity: 0;
+}
+
+.caption {
+    position: fixed;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 95;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+
+    h2 {
+        font-family: $font-family-serif;
+        font-weight: 400;
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        color: $orbit-ink;
+    }
+
+    p {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: $orbit-muted;
+        margin: 0;
+    }
+}
+
+.captionVisible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.closeDock {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 100;
+    background: none;
+    border: 1px solid $orbit-line;
+    color: $orbit-ink;
+    padding: 0.6rem 1.2rem;
+    font-family: $font-family-sans;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, border-color $transition-fast, background $transition-fast;
+
+    &:hover {
+        border-color: $orbit-line-strong;
+        background: rgba(28, 27, 25, 0.04);
+    }
+}
+
+.closeDockVisible {
+    opacity: 1;
+    pointer-events: auto;
+}

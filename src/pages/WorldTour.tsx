@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SmoothScrollWrapper from '../components/SmoothScrollWrapper';
 import MixedGallery from '../components/MixedGallery';
@@ -8,17 +9,45 @@ import Scene from '../components/Three/Scene';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Marquee from '../components/Marquee';
 import SplashScreen from '../components/SplashScreen';
+import FilmGrain from '../components/FilmGrain';
+import Lightbox from '../components/Lightbox';
+import { startScrollTracker } from '../utils/scrollTracker';
 
 
 function WorldTour() {
   const [loading, setLoading] = useState(true);
   const [sceneReady, setSceneReady] = useState(false);
   const navigate = useNavigate();
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Start the global scroll-velocity tracker that drives the gallery warp.
+  useEffect(() => {
+    startScrollTracker();
+  }, []);
+
+  // Cinematic title reveal once the splash lifts.
+  useEffect(() => {
+    if (loading || !titleRef.current) return;
+    const letters = titleRef.current.querySelectorAll('span');
+    gsap.fromTo(
+      letters,
+      { yPercent: 120, opacity: 0, rotateX: -70 },
+      {
+        yPercent: 0,
+        opacity: 1,
+        rotateX: 0,
+        duration: 1.1,
+        ease: 'power4.out',
+        stagger: 0.05,
+        delay: 0.15,
+      },
+    );
+  }, [loading]);
 
   // Warm up WebGL assets behind the splash to avoid post-splash hitching.
   useEffect(() => {
@@ -106,6 +135,12 @@ function WorldTour() {
 
       {loading && <SplashScreen onComplete={() => setLoading(false)} />}
 
+      {/* Film grain + vignette over the whole page */}
+      <FilmGrain />
+
+      {/* Click-to-expand lightbox (renders only when a photo is focused) */}
+      <Lightbox />
+
       {/* WebGL Overlay */}
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: 0, pointerEvents: 'none', background: 'transparent' }}>
         <ErrorBoundary fallback={null}>
@@ -158,8 +193,25 @@ function WorldTour() {
               justifyContent: 'center',
               flexDirection: 'column'
             }}>
-              <h1 style={{ fontSize: '8vw', fontFamily: '"Playfair Display", serif', mixBlendMode: 'difference', zIndex: 20 }}>
-                World Tour
+              <h1
+                ref={titleRef}
+                style={{
+                  fontSize: '8vw',
+                  fontFamily: '"Playfair Display", serif',
+                  mixBlendMode: 'difference',
+                  zIndex: 20,
+                  display: 'flex',
+                  perspective: '600px',
+                }}
+              >
+                {'World Tour'.split('').map((c, i) => (
+                  <span
+                    key={i}
+                    style={{ display: 'inline-block', whiteSpace: 'pre', transformStyle: 'preserve-3d' }}
+                  >
+                    {c}
+                  </span>
+                ))}
               </h1>
             </header>
 

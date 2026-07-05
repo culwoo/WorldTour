@@ -11,15 +11,32 @@ export interface GalleryItemState {
     useWebGL: boolean;
 }
 
+export interface FocusRect {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+}
+
 interface GalleryStore {
     items: GalleryItemState[];
     registerItem: (id: number, url: string, ref: HTMLElement, zIndex?: number, useWebGL?: boolean) => void;
     unregisterItem: (id: number) => void;
     updateHover: (id: number, hover: boolean) => void;
+
+    // Lightbox (click-to-expand)
+    focusedId: number | null;
+    focusRect: FocusRect | null;
+    setFocused: (id: number, rect: FocusRect) => void;
+    clearFocus: () => void;
 }
 
 export const useGalleryStore = create<GalleryStore>((set) => ({
     items: [],
+    focusedId: null,
+    focusRect: null,
+    setFocused: (id, rect) => set({ focusedId: id, focusRect: rect }),
+    clearFocus: () => set({ focusedId: null, focusRect: null }),
     registerItem: (id, url, ref, zIndex = 0, useWebGL = true) => set((state) => {
         // Check if exists
         const existing = state.items.find(item => item.id === id);

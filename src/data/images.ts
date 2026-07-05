@@ -3,169 +3,169 @@ export const images = [
     {
         id: 1,
         url: '/images/000033.webp',
-        title: '000033',
-        author: 'Cheolwoo',
+        title: '문',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 2,
         url: '/images/Cinestill-50D-plus-Kodak-Endura-2.webp',
-        title: 'Cinestill 50D II',
-        author: 'Cheolwoo',
+        title: '계단',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 3,
         url: '/images/Cinestill-50D-plus-Kodak-Endura.webp',
-        title: 'Cinestill 50D',
-        author: 'Cheolwoo',
+        title: '노들섬',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 4,
         url: '/images/Cinestill-800T-plus-Kodak-Endura-2.webp',
-        title: 'Cinestill 800T',
-        author: 'Cheolwoo',
+        title: '비마상',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 5,
         url: '/images/Fujicolor-C200-plus-3513.webp',
-        title: 'Fujicolor C200',
-        author: 'Cheolwoo',
+        title: '베트남',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 6,
         url: '/images/IMG_1150.webp',
-        title: 'Capture 1150',
-        author: 'Cheolwoo',
+        title: '꽃',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 7,
         url: '/images/IMG_1338.webp',
-        title: 'Capture 1338',
-        author: 'Cheolwoo',
+        title: '용산공원 _ 나무',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 8,
         url: '/images/IMG_1345.webp',
-        title: 'Capture 1345',
-        author: 'Cheolwoo',
+        title: '용산공원 _ 집',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 9,
         url: '/images/IMG_3218.webp',
-        title: 'Capture 3218',
-        author: 'Cheolwoo',
+        title: '강아지',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 10,
         url: '/images/IMG_5031.webp',
-        title: 'Capture 5031',
-        author: 'Cheolwoo',
+        title: '도쿄타워',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 11,
         url: '/images/IMG_5637.webp',
-        title: 'Capture 5637',
-        author: 'Cheolwoo',
+        title: '베르사유 궁전 _ 문',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 12,
         url: '/images/IMG_5725.webp',
-        title: 'Capture 5725',
-        author: 'Cheolwoo',
+        title: '베르사유 궁',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 13,
         url: '/images/IMG_5771.webp',
-        title: 'Capture 5771',
-        author: 'Cheolwoo',
+        title: '생트 샤펠',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 14,
         url: '/images/IMG_5834.webp',
-        title: 'Capture 5834',
-        author: 'Cheolwoo',
+        title: '용산 공원 _ 크리스마스',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 15,
         url: '/images/IMG_5895.webp',
-        title: 'Capture 5895',
-        author: 'Cheolwoo',
+        title: '에펠탑',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 16,
         url: '/images/IMG_5921.webp',
-        title: 'Capture 5921',
-        author: 'Cheolwoo',
+        title: '프랑스 개선문',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 17,
         url: '/images/IMG_6039.webp',
-        title: 'Capture 6039',
-        author: 'Cheolwoo',
+        title: '암스테르담',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 18,
         url: '/images/IMG_6613.webp',
         title: 'Capture 6613',
-        author: 'Cheolwoo',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 19,
         url: '/images/IMG_7076.webp',
         title: 'Capture 7076',
-        author: 'Cheolwoo',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 20,
         url: '/images/IMG_7087.webp',
         title: 'Capture 7087',
-        author: 'Cheolwoo',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 21,
         url: '/images/IMG_7178.webp',
-        title: 'Capture 7178',
-        author: 'Cheolwoo',
+        title: '향',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 22,
         url: '/images/IMG_9109.webp',
-        title: 'Capture 9109',
-        author: 'Cheolwoo',
+        title: '전봇대',
+        author: 'culwoo',
         orientation: 'portrait'
     },
     {
         id: 23,
         url: '/images/Kodak-Plus-X-Pan-125-Exp.-1979.webp',
-        title: 'Kodak Plus-X',
-        author: 'Cheolwoo',
+        title: '전봇대',
+        author: 'culwoo',
         orientation: 'landscape'
     },
     {
         id: 24,
         url: '/images/Konica-Impresa-50-Exp.2006-plus-Kodak-Endura.webp',
-        title: 'Konica Impresa',
-        author: 'Cheolwoo',
+        title: '부산',
+        author: 'culwoo',
         orientation: 'landscape'
     }
 ];

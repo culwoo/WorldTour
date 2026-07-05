@@ -1,0 +1,58 @@
+// Full-screen film-grain + vignette. Everything here is pointer-transparent
+// and GPU-composited.
+
+.wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 60;          // above the gallery + canvas, below UI chrome (z >= 90)
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.grain {
+    position: absolute;
+    // Oversized so the stepped translate never exposes an edge.
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    // A single feTurbulence tile, tiled. Monochrome, low alpha.
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    // Whisper-level so the photographs read as their true originals at rest.
+    // soft-light barely perturbs midtones (overlay was lifting shadows -> haze).
+    opacity: 0.028;
+    mix-blend-mode: soft-light;
+    will-change: transform;
+    animation: grainShift 0.6s steps(1) infinite;
+}
+
+.vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 58%,
+        rgba(0, 0, 0, 0.18) 90%,
+        rgba(0, 0, 0, 0.36) 100%
+    );
+}
+
+// 8-frame stepped jitter reads as "boiling" film grain with no interpolation.
+@keyframes grainShift {
+    0%   { transform: translate(0, 0); }
+    12%  { transform: translate(-6%, 3%); }
+    25%  { transform: translate(4%, -5%); }
+    37%  { transform: translate(-3%, 6%); }
+    50%  { transform: translate(6%, 2%); }
+    62%  { transform: translate(-5%, -4%); }
+    75%  { transform: translate(3%, 5%); }
+    87%  { transform: translate(-4%, -6%); }
+    100% { transform: translate(0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .grain {
+        animation: none;
+    }
+}

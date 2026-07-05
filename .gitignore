@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 
 .vercel
+.env*
+
+# Dev artifacts
+.playwright-mcp/
+world-tour-mobile-*.png
+.sisyphus/

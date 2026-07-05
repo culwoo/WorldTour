@@ -5,7 +5,6 @@ import GalleryPlane from './GalleryPlane';
 import { PerspectiveCamera, Preload } from '@react-three/drei';
 
 import FloatingHeroImages from './FloatingHeroImages';
-import PersistentGeo from './PersistentGeo';
 
 interface SceneProps {
     ready?: boolean;
@@ -24,10 +23,20 @@ const SceneCamera: React.FC = () => {
 
 const Scene: React.FC<SceneProps> = ({ ready = true }) => {
     const items = useGalleryStore((state) => state.items);
+    // When a photo is expanded in the lightbox, fade its in-gallery plane out
+    // so it doesn't ghost behind the FLIP animation as the backdrop fades in.
+    const focusedId = useGalleryStore((state) => state.focusedId);
+
+    // Clamp device-pixel-ratio lower on phones so the extra WebGL planes stay
+    // buttery; desktops get the crisp upper bound.
+    const isMobile = useMemo(
+        () => typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
+        [],
+    );
 
     return (
         <Canvas
-            gl={{ alpha: true }}
+            gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
             style={{
                 width: '100%',
                 height: '100%',
@@ -37,25 +46,21 @@ const Scene: React.FC<SceneProps> = ({ ready = true }) => {
                 left: 0,
                 touchAction: 'none'
             }}
-            dpr={[1, 1.5]}
+            dpr={isMobile ? [1, 1.25] : [1, 2]}
         >
             <SceneCamera />
 
-            {/* 1. Hero Images: Independent Suspense layer. 
-                These are preloaded in Splash, so they should appear instantly. */}
+            {/* Hero images — preloaded behind the splash so they appear instantly. */}
             <Suspense fallback={null}>
                 <FloatingHeroImages />
-                <PersistentGeo />
             </Suspense>
 
-            {/* 2. Main Gallery: Independent Suspense layer.
-                Now we load this IMMEDIATELY behind the splash screen.
-                This allows shaders to compile and textures to upload while the user is waiting,
-                preventing the freeze upon home screen entry. */}
+            {/* Main gallery — loaded immediately behind the splash so shaders
+                compile and textures upload while the user waits. */}
             {ready && (
                 <Suspense fallback={null}>
                     {items.filter(item => item.useWebGL !== false).map((item) => (
-                        <GalleryPlane key={item.id} item={item} />
+                        <GalleryPlane key={item.id} item={item} hidden={focusedId === item.id} />
                     ))}
                 </Suspense>
             )}

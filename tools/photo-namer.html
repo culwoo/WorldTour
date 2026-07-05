@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Namer — LifeOfKwak</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: #f5f4f1; color: #1c1b19;
+        padding: 2rem;
+    }
+    h1 { font-size: 1.2rem; font-weight: 500; margin-bottom: 0.4rem; }
+    p.desc { font-size: 0.8rem; color: #8f8c86; margin-bottom: 1.6rem; }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.2rem;
+    }
+    .card {
+        background: #fff; border-radius: 10px; overflow: hidden;
+        box-shadow: 0 1px 4px rgba(28,27,25,0.08);
+    }
+    .card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+    .card .meta { padding: 0.7rem 0.8rem 0.9rem; }
+    .card .file { font-size: 0.62rem; color: #8f8c86; word-break: break-all; margin-bottom: 0.45rem; }
+    .card .file b { color: #1c1b19; font-weight: 600; margin-right: 0.3rem; }
+    .card input {
+        width: 100%; padding: 0.45rem 0.55rem; font-size: 0.85rem;
+        border: 1px solid rgba(28,27,25,0.18); border-radius: 6px;
+        font-family: inherit; background: #fafaf8;
+    }
+    .card input:focus { outline: none; border-color: #1c1b19; }
+    .bar {
+        position: sticky; top: 0; z-index: 10; background: #f5f4f1;
+        padding: 0.8rem 0 1.2rem; display: flex; gap: 0.8rem; align-items: center;
+    }
+    button {
+        padding: 0.6rem 1.2rem; font-size: 0.8rem; letter-spacing: 0.05em;
+        border: 1px solid #1c1b19; background: #1c1b19; color: #f5f4f1;
+        border-radius: 6px; cursor: pointer; font-family: inherit;
+    }
+    button:hover { opacity: 0.85; }
+    #status { font-size: 0.75rem; color: #4a8a4a; }
+    #output {
+        width: 100%; height: 300px; margin-top: 1rem; display: none;
+        font-family: Consolas, monospace; font-size: 0.72rem;
+        padding: 1rem; border: 1px solid rgba(28,27,25,0.18); border-radius: 8px;
+    }
+</style>
+</head>
+<body>
+<h1>Photo Namer</h1>
+<p class="desc">사진 아래에 원하는 이름을 입력하고 [images.ts 코드 복사]를 누르면, 그대로 <code>src/data/images.ts</code>에 전체 붙여넣기 하면 되는 코드가 복사됩니다.</p>
+
+<div class="bar">
+    <button onclick="copyCode()">images.ts 코드 복사</button>
+    <span id="status"></span>
+</div>
+
+<div class="grid" id="grid"></div>
+<textarea id="output" readonly></textarea>
+
+<script>
+const photos = [
+    { id: 1,  file: '000033.webp',                                         title: '000033',           orientation: 'portrait' },
+    { id: 2,  file: 'Cinestill-50D-plus-Kodak-Endura-2.webp',              title: 'Cinestill 50D II', orientation: 'portrait' },
+    { id: 3,  file: 'Cinestill-50D-plus-Kodak-Endura.webp',                title: 'Cinestill 50D',    orientation: 'landscape' },
+    { id: 4,  file: 'Cinestill-800T-plus-Kodak-Endura-2.webp',             title: 'Cinestill 800T',   orientation: 'portrait' },
+    { id: 5,  file: 'Fujicolor-C200-plus-3513.webp',                       title: 'Fujicolor C200',   orientation: 'landscape' },
+    { id: 6,  file: 'IMG_1150.webp',                                       title: 'Capture 1150',     orientation: 'landscape' },
+    { id: 7,  file: 'IMG_1338.webp',                                       title: 'Capture 1338',     orientation: 'portrait' },
+    { id: 8,  file: 'IMG_1345.webp',                                       title: 'Capture 1345',     orientation: 'portrait' },
+    { id: 9,  file: 'IMG_3218.webp',                                       title: 'Capture 3218',     orientation: 'landscape' },
+    { id: 10, file: 'IMG_5031.webp',                                       title: 'Capture 5031',     orientation: 'portrait' },
+    { id: 11, file: 'IMG_5637.webp',                                       title: 'Capture 5637',     orientation: 'portrait' },
+    { id: 12, file: 'IMG_5725.webp',                                       title: 'Capture 5725',     orientation: 'landscape' },
+    { id: 13, file: 'IMG_5771.webp',                                       title: 'Capture 5771',     orientation: 'portrait' },
+    { id: 14, file: 'IMG_5834.webp',                                       title: 'Capture 5834',     orientation: 'landscape' },
+    { id: 15, file: 'IMG_5895.webp',                                       title: 'Capture 5895',     orientation: 'landscape' },
+    { id: 16, file: 'IMG_5921.webp',                                       title: 'Capture 5921',     orientation: 'landscape' },
+    { id: 17, file: 'IMG_6039.webp',                                       title: 'Capture 6039',     orientation: 'landscape' },
+    { id: 18, file: 'IMG_6613.webp',                                       title: 'Capture 6613',     orientation: 'portrait' },
+    { id: 19, file: 'IMG_7076.webp',                                       title: 'Capture 7076',     orientation: 'portrait' },
+    { id: 20, file: 'IMG_7087.webp',                                       title: 'Capture 7087',     orientation: 'portrait' },
+    { id: 21, file: 'IMG_7178.webp',                                       title: 'Capture 7178',     orientation: 'landscape' },
+    { id: 22, file: 'IMG_9109.webp',                                       title: 'Capture 9109',     orientation: 'portrait' },
+    { id: 23, file: 'Kodak-Plus-X-Pan-125-Exp.-1979.webp',                 title: 'Kodak Plus-X',     orientation: 'landscape' },
+    { id: 24, file: 'Konica-Impresa-50-Exp.2006-plus-Kodak-Endura.webp',   title: 'Konica Impresa',   orientation: 'landscape' },
+];
+
+const AUTHOR = 'culwoo';
+
+const grid = document.getElementById('grid');
+photos.forEach((p) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+        <img src="../public/images/ring/${p.file}" alt="${p.file}" loading="lazy">
+        <div class="meta">
+            <div class="file"><b>#${p.id}</b>${p.file}</div>
+            <input type="text" id="title-${p.id}" value="${p.title.replace(/"/g, '&quot;')}" placeholder="사진 이름">
+        </div>`;
+    grid.appendChild(card);
+});
+
+function buildCode() {
+    const entries = photos.map((p) => {
+        const title = document.getElementById('title-' + p.id).value.trim() || p.title;
+        return [
+            '    {',
+            `        id: ${p.id},`,
+            `        url: '/images/${p.file}',`,
+            `        title: '${title.replace(/'/g, "\\'")}',`,
+            `        author: '${AUTHOR}',`,
+            `        orientation: '${p.orientation}'`,
+            '    }',
+        ].join('\n');
+    });
+    return '\nexport const images = [\n' + entries.join(',\n') + '\n];\n';
+}
+
+async function copyCode() {
+    const code = buildCode();
+    const status = document.getElementById('status');
+    const output = document.getElementById('output');
+    output.value = code;
+    try {
+        await navigator.clipboard.writeText(code);
+        status.textContent = '복사 완료! src/data/images.ts 내용 전체를 지우고 붙여넣으세요.';
+    } catch {
+        output.style.display = 'block';
+        output.select();
+        status.textContent = '아래 코드를 직접 복사하세요 (Ctrl+A, Ctrl+C).';
+    }
+}
+</script>
+</body>
+</html>
